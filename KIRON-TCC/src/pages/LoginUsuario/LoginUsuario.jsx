@@ -1,6 +1,8 @@
+import styles from './LoginUsuario.module.css'
+
 const LoginUsuario = () => {
   return (
-    <div>
+    <div className={styles.loginContainer}>
         <h1>Login de Usuário</h1>
         <form>
             <label htmlFor="email">Email:</label>

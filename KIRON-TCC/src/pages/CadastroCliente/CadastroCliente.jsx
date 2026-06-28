@@ -2,31 +2,36 @@ import styles from './CadastroCliente.module.css';
 
 const CadastroCliente = () => {
   return (
-    <div className={styles['cadastro-container']}>
+    <div className={styles['container-fundo']}>
+      <div className={styles['card']}>
         <h1>Cadastro de Cliente</h1>
-        <form>
-            <label htmlFor="nome">Nome:</label>
-            <input type="text" id="nome" name="nome" required />
-            <br />
-            <label htmlFor="email">Email:</label>
-            <input type="email" id="email" name="email" required />
-            <br /> 
-            <label htmlFor="cpf">CPF:</label>
-            <input type="text" id="cpf" name="cpf" required />
-            <br />
-            <label htmlFor="telefone">Telefone:</label>
-            <input type="tel" id="telefone" name="telefone" required />
-            <br />
-            <label htmlFor="senha">Senha:</label>
-            <input type="password" id="senha" name="senha" required />
-            <br />
-            <label htmlFor="confirmar-senha">Confirmar Senha:</label>
-            <input type="password" id="confirmar-senha" name="confirmar-senha" required />
-            <button type="submit">Cadastrar</button>
+        <form className={styles['form-grid']}>
+          <label className={styles['label-input']} htmlFor="nome">Nome:</label>
+          <input className={styles['input-field']} type="text" id="nome" name="nome" required />
+
+          <label className={styles['label-input']} htmlFor="email">Email:</label>
+          <input className={styles['input-field']} type="email" id="email" name="email" required />
+
+          <label className={styles['label-input']} htmlFor="cpf">CPF:</label>
+          <input className={styles['input-field']} type="text" id="cpf" name="cpf" required />
+
+          <label className={styles['label-input']} htmlFor="telefone">Telefone:</label>
+          <input className={styles['input-field']} type="tel" id="telefone" name="telefone" required />
+
+          <label className={styles['label-input']} htmlFor="senha">Senha:</label>
+          <input className={styles['input-field']} type="password" id="senha" name="senha" required />
+
+          <label className={styles['label-input']} htmlFor="confirmar-senha">Confirmar Senha:</label>
+          <input className={styles['input-field']} type="password" id="confirmar-senha" name="confirmar-senha" required />
+
+          <div className={styles.actions}>
+            <button className={styles['submit-btn']} type="submit">Cadastrar</button>
+            <button className={styles['cancel-btn']} type="button" onClick={() => window.location.href = '/login'} >Cancelar</button>
+          </div>
         </form>
+      </div>
     </div>
-
-
-  );
+  )
 }
+
 export default CadastroCliente;

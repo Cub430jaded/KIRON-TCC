@@ -4,33 +4,19 @@ import {
     Route
 } from "react-router-dom"
 
-import HomeFuncionario from "../pages/HomeFuncionario/HomeFuncionario"
-import ListarProduto from "../pages/ListarProduto/ListarProduto"
 
+import LoginUsuario from "../pages/LoginUsuario/LoginUsuario"
+import CadastroCliente from "../pages/CadastroCliente/CadastroCliente"
 
-
-const AppRoutes = () =>{
-
+const AppRoutes = () => {
     return (
-     <BrowserRouter>
-        <Routes>
-          
-           <Route 
-             path="/"
-             element={<HomeFuncionario/>}
-           />
-            <Route 
-             path="/pizzaria/funcionario/home"
-             element={<HomeFuncionario/>}
-           />
-           <Route 
-             path="/pizzaria/funcionario/produtos"
-             element={<ListarProduto/>}
-           />
-
-        </Routes>
-     
-     </BrowserRouter>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<LoginUsuario />} />
+                <Route path="/login" element={<LoginUsuario />} />
+                <Route path="/cadastro" element={<CadastroCliente />} />
+            </Routes>
+        </BrowserRouter>
     )
 }
 

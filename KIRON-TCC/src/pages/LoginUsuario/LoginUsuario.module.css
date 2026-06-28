@@ -4,5 +4,11 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: aquamarine;
-}
+  }
+
+  .botao-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 300px;
+  }

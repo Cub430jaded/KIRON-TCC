@@ -1,0 +1,68 @@
+.pageWrapper {
+  min-height: 100vh;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  display: flex;
+  flex-direction: column;
+  background-image: url('/src/assets/rebimboca_da_parafuseta.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.container-fundo {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.card {
+  width: 500px;
+  background: rgba(255,255,255,0.98);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(11,35,60,0.10), 0 0 0 1px rgba(11,35,60,0.06);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.card h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #0f4d8b;
+}
+
+.card p {
+  margin: 0;
+  color: #333;
+  text-align: center;
+}
+
+.submit-btn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #0f4d8b;
+  color: white;
+  cursor: pointer;
+}
+
+.footer {
+  margin-top: auto;
+  text-align: center;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 560px) {
+  .card {
+    width: 100%;
+  }
+}

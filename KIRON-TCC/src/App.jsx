@@ -1,20 +1,8 @@
 import './App.css'
-import { useState } from 'react'
-import LoginUsuario from './pages/LoginUsuario/LoginUsuario.jsx'
-import CadastroCliente from './pages/CadastroCliente/CadastroCliente.jsx'
+import AppRoutes from './Routes/AppRoutes.jsx'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('login')
-
-  return (
-    <>
-      {currentPage === 'login' ? (
-        <LoginUsuario onCadastro={() => setCurrentPage('cadastro')} />
-      ) : (
-        <CadastroCliente />
-      )}
-    </>
-  )
+  return <AppRoutes />
 }
 
 export default App

@@ -28,7 +28,7 @@ const LoginUsuario = () => {
           </form>
         </div>
       </div>
-      <footer className={styles.footer}>Direitos reservados © 2026</footer>
+      <footer className={styles.footer}>Direitos reservados KIRON-TI © 2026</footer>
     </div>
   );
 }

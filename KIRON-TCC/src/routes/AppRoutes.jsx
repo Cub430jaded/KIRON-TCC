@@ -10,7 +10,7 @@ import CadastroCliente from "../pages/CadastroCliente/CadastroCliente"
 
 const AppRoutes = () => {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename="/KIRON-TCC">
             <Routes>
                 <Route path="/" element={<LoginUsuario />} />
                 <Route path="/login" element={<LoginUsuario />} />

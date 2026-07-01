@@ -29,7 +29,7 @@ const CadastroCliente = () => {
             <input className={styles['input-field']} type="password" id="confirmar-senha" name="confirmar-senha" required />
 
             <div className={styles.actions}>
-              <button className={styles['submit-btn']} type="submit" onClick={() => navigate('/login')}>Cadastrar</button>
+              <button className={styles['submit-btn']} type="button" onClick={() => navigate('/login')}>Cadastrar</button>
               <button className={styles['cancel-btn']} type="button" onClick={() => navigate('/login')}>
                 Cancelar
               </button>

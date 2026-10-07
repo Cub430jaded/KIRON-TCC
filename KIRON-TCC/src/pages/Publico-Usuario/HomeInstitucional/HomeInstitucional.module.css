@@ -1,0 +1,354 @@
+.pageWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+/* --- CABEÇALHO --- */
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 8%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logoArea {
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+.logoKiron { color: #0066CC; }
+.logoTi { color: #333; }
+
+.navButtons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.loginBtn {
+  background: none;
+  border: none;
+  color: #555;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.loginBtn:hover { color: #0066CC; }
+
+.registerBtn {
+  background-color: #0066CC;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.registerBtn:hover { background-color: #0052a3; }
+
+/* --- HERO SECTION --- */
+.mainContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.heroSection {
+  text-align: center;
+  max-width: 900px;
+  padding: 80px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.badge {
+  background-color: #e6f0fa;
+  color: #0066CC;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* --- CARROSSEL --- */
+.carouselContainer {
+  position: relative;
+  width: 100%;
+  max-width: 900px; /* Limita o tamanho para não estourar na tela */
+  height: 350px; /* Ajuste a altura conforme a proporção das suas imagens */
+  margin: 0 auto 40px auto; /* Centraliza e dá um respiro antes do título */
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.carouselTrack {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s ease-in-out; 
+}
+
+.carouselSlide {
+  min-width: 100%;
+  height: 100%;
+}
+
+.carouselImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
+.carouselBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.7);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #0066CC;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+  z-index: 10;
+}
+
+.carouselBtn:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.prevBtn { left: 15px; }
+.nextBtn { right: 15px; }
+
+.carouselDots {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.activeDot {
+  background-color: #0066CC; /* Pinta a bolinha ativa com a cor da marca */
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  line-height: 1.15;
+  color: #1a1a1a;
+  margin-bottom: 24px;
+}
+.highlight { color: #0066CC; }
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  color: #555;
+  max-width: 700px;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.ctaButton {
+  background-color: #0066CC;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 18px 48px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+  transition: all 0.3s;
+}
+.ctaButton:hover {
+  background-color: #0052a3;
+  transform: translateY(-2px);
+}
+
+.subText {
+  margin-top: 16px;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+/* --- CARDS DE DIFERENCIAIS --- */
+.features {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 40px 20px 80px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  flex: 1;
+  min-width: 300px;
+  text-align: left;
+  border: 1px solid #eaeaea;
+  border-top: 4px solid #0066CC;
+  transition: transform 0.3s;
+}
+.card:hover { transform: translateY(-5px); }
+
+.iconPlaceholder {
+  font-size: 2.8rem; 
+  color: #0066CC;    
+  margin-bottom: 20px;
+}
+
+.card h3 {
+  font-size: 1.3rem;
+  color: #1a1a1a;
+  margin-bottom: 15px;
+}
+
+.card p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.howItWorks {
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.sectionTitle {
+  font-size: 2.2rem;
+  color: #1a1a1a;
+  margin-bottom: 60px;
+}
+
+.stepsContainer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  gap: 20px;
+}
+
+.step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stepNumber {
+  width: 60px;
+  height: 60px;
+  background-color: #0066CC;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.step h4 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #1a1a1a;
+}
+
+.step p {
+  color: #666;
+  line-height: 1.5;
+}
+
+.stepDivider {
+  height: 2px;
+  width: 100px;
+  background-color: #ddd;
+  margin-top: 30px;
+}
+
+/* --- RODAPÉ --- */
+.footer {
+  width: 100%;
+  background-color: #1a1a1a;
+  color: #fff;
+  padding: 60px 8% 20px;
+}
+
+.footerContent {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 40px;
+  margin-bottom: 20px;
+}
+
+.footerBrand h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+.lightText { color: #0066CC; }
+.footerBrand p { color: #999; max-width: 300px; line-height: 1.5; }
+
+.footerLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footerLinks h4 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+.footerLinks a, .footerLinks p {
+  color: #999;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+.footerLinks a:hover { color: #0066CC; }
+
+.footerBottom {
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}

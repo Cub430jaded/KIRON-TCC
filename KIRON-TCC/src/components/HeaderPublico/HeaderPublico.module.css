@@ -1,0 +1,57 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+.logoArea {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.logoKiron {
+  color: #0066CC;
+}
+
+.logoTi {
+  color: #333;
+}
+
+.navButtons {
+  display: flex;
+  gap: 15px;
+}
+
+.loginBtn {
+  background: none;
+  border: none;
+  color: #0066CC;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: color 0.3s ease;
+}
+
+.loginBtn:hover {
+  color: #004c99;
+  text-decoration: underline;
+}
+
+.registerBtn {
+  background-color: #0066CC;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.registerBtn:hover {
+  background-color: #004c99;
+}

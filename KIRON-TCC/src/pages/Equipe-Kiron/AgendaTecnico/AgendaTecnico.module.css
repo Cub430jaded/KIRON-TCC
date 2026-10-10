@@ -1,0 +1,44 @@
+.pageContainer { display: flex; min-height: 100vh; background-color: #f1f5f9; font-family: 'Segoe UI', Tahoma, sans-serif; }
+/* Sidebar Técnica */
+.sidebar { width: 250px; background-color: #111827; color: white; display: flex; flex-direction: column; padding: 20px 0; box-shadow: 2px 0 10px rgba(0,0,0,0.1); flex-shrink: 0; }
+.sidebarBrand { padding: 0 20px 20px; display: flex; align-items: center; gap: 10px; }
+.lightText { color: #5BB4F2; }
+.badgeStaff { background-color: #ef4444; color: white; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+.techProfile { display: flex; align-items: center; gap: 15px; padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
+.avatar { width: 45px; height: 45px; background-color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+.techName { font-weight: bold; font-size: 0.95rem; }
+.techRole { color: #9ca3af; font-size: 0.8rem; }
+.sidebarNav { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+.sidebarNav button { background: none; border: none; color: #9ca3af; text-align: left; padding: 15px 25px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: all 0.3s; }
+.sidebarNav button:hover, .activeMenu { background-color: rgba(255,255,255,0.05); color: white !important; border-left: 4px solid #3b82f6; }
+.sidebarFooter { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+.logoutBtn { width: 100%; background: none; border: none; color: #ef4444; text-align: left; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
+
+/* Main Content */
+.mainContent { flex: 1; padding: 30px 40px; display: flex; flex-direction: column; gap: 30px; overflow-y: auto; }
+.topHeader { display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px 30px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.topHeader h1 { font-size: 1.5rem; color: #1f2937; }
+.dateTabs { display: flex; background-color: #f3f4f6; border-radius: 8px; padding: 4px; }
+.tab { padding: 8px 16px; border: none; background: none; border-radius: 6px; color: #6b7280; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.tab:hover { color: #3b82f6; }
+.tabActive { padding: 8px 16px; border: none; background: white; border-radius: 6px; color: #111827; font-weight: bold; box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: default; }
+
+/* Agenda List */
+.agendaList { display: flex; flex-direction: column; gap: 15px; max-width: 900px; }
+.agendaCard { display: flex; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 5px solid #3b82f6; transition: transform 0.2s; }
+.agendaCard:hover { transform: translateY(-2px); }
+.timeColumn { width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; border-right: 1px solid #e5e7eb; padding-right: 15px; margin-right: 15px; }
+.timeColumn h3 { color: #111827; font-size: 1.5rem; }
+.statusBadge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+.statusConcluído { background-color: #dcfce7; color: #16a34a; }
+.statusPendente { background-color: #fef3c7; color: #d97706; }
+
+.detailsColumn { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.detailsColumn h4 { font-size: 1.1rem; color: #1f2937; margin-bottom: 5px; }
+.infoText { color: #6b7280; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+.infoText i { color: #9ca3af; width: 16px; }
+
+.actionColumn { display: flex; align-items: center; padding-left: 20px; }
+.btnRoute { background-color: #f3f4f6; color: #3b82f6; border: 1px solid #d1d5db; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+.btnRoute:hover { background-color: #e5e7eb; }
+.emptyState { text-align: center; padding: 40px; color: #9ca3af; font-style: italic; background: white; border-radius: 10px; }

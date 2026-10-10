@@ -1,0 +1,60 @@
+.pageContainer { display: flex; min-height: 100vh; background-color: #f1f5f9; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+/* Menu Lateral Técnico */
+.sidebar { width: 250px; background-color: #111827; color: white; display: flex; flex-direction: column; padding: 20px 0; box-shadow: 2px 0 10px rgba(0,0,0,0.1); flex-shrink: 0; }
+.sidebarBrand { padding: 0 20px 20px; display: flex; align-items: center; gap: 10px; }
+.lightText { color: #5BB4F2; }
+.badgeStaff { background-color: #ef4444; color: white; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+.techProfile { display: flex; align-items: center; gap: 15px; padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
+.avatar { width: 45px; height: 45px; background-color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+.techName { font-weight: bold; font-size: 0.95rem; }
+.techRole { color: #9ca3af; font-size: 0.8rem; }
+.sidebarNav { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+.sidebarNav button { background: none; border: none; color: #9ca3af; text-align: left; padding: 15px 25px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: all 0.3s; }
+.sidebarNav button:hover, .activeMenu { background-color: rgba(255,255,255,0.05); color: white !important; border-left: 4px solid #3b82f6; }
+.sidebarFooter { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+.logoutBtn { width: 100%; background: none; border: none; color: #ef4444; text-align: left; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
+
+/* Conteúdo Principal */
+.mainContent { flex: 1; padding: 30px 40px; display: flex; flex-direction: column; gap: 30px; overflow-y: auto; }
+.topHeader { display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px 30px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.topHeader h1 { font-size: 1.5rem; color: #1f2937; }
+
+.clientFilter { display: flex; align-items: center; gap: 10px; }
+.clientFilter label { font-weight: 600; color: #4b5563; font-size: 0.95rem; }
+.clientFilter select { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.95rem; background-color: #f9fafb; outline: none; color: #1f2937; }
+.clientFilter select:focus { border-color: #3b82f6; }
+
+/* Grid de Monitoramento */
+.dashboardGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+
+.healthCard { background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; border-top: 4px solid transparent; transition: transform 0.2s; }
+.healthCard:hover { transform: translateY(-3px); }
+
+/* Cores Dinâmicas por Status */
+.cardVerde { border-top-color: #10b981; }
+.cardAmarelo { border-top-color: #f59e0b; }
+.cardVermelho { border-top-color: #ef4444; }
+
+.cardHeader { display: flex; justify-content: space-between; align-items: flex-start; padding: 20px; border-bottom: 1px solid #f3f4f6; }
+.clientName { font-size: 0.8rem; font-weight: bold; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+.cardHeader h3 { font-size: 1.2rem; color: #111827; margin-top: 4px; }
+
+.statusIcon { font-size: 1.8rem; }
+.iconVerde { color: #10b981; }
+.iconAmarelo { color: #f59e0b; }
+.iconVermelho { color: #ef4444; }
+
+.cardBody { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 8px; font-size: 0.95rem; color: #4b5563; }
+.cardBody p strong { color: #111827; }
+
+.alertBox { margin-top: 10px; padding: 12px; border-radius: 6px; background-color: #f9fafb; border-left: 3px solid #d1d5db; }
+.cardVermelho .alertBox { background-color: #fef2f2; border-left-color: #ef4444; color: #b91c1c; }
+.cardAmarelo .alertBox { background-color: #fffbeb; border-left-color: #f59e0b; color: #b45309; }
+
+.cardFooter { padding: 15px 20px; background-color: #f9fafb; border-top: 1px solid #f3f4f6; display: flex; justify-content: flex-end; align-items: center; }
+
+.btnAcao { background-color: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; font-size: 0.9rem; }
+.btnAcao:hover { background-color: #2563eb; }
+
+.okText { color: #10b981; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }

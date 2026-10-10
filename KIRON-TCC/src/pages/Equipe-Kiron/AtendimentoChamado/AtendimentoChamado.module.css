@@ -1,0 +1,48 @@
+.pageContainer { display: flex; min-height: 100vh; background-color: #f1f5f9; font-family: 'Segoe UI', Tahoma, sans-serif; }
+/* Sidebar Técnica Reduzida */
+.sidebar { width: 250px; background-color: #111827; color: white; display: flex; flex-direction: column; padding: 20px 0; box-shadow: 2px 0 10px rgba(0,0,0,0.1); flex-shrink: 0; }
+.sidebarBrand { padding: 0 20px 20px; display: flex; align-items: center; gap: 10px; }
+.lightText { color: #5BB4F2; }
+.badgeStaff { background-color: #ef4444; color: white; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+.techProfile { display: flex; align-items: center; gap: 15px; padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
+.avatar { width: 45px; height: 45px; background-color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+.techName { font-weight: bold; font-size: 0.95rem; }
+.techRole { color: #9ca3af; font-size: 0.8rem; }
+.sidebarNav { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+.sidebarNav button { background: none; border: none; color: #9ca3af; text-align: left; padding: 15px 25px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: all 0.3s; }
+.sidebarNav button:hover, .activeMenu { background-color: rgba(255,255,255,0.05); color: white !important; border-left: 4px solid #3b82f6; }
+
+/* Main Content */
+.mainContent { flex: 1; padding: 30px 40px; display: flex; flex-direction: column; gap: 30px; overflow-y: auto; }
+.topHeader { display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px 30px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 4px solid #ef4444; }
+.topHeader h1 { font-size: 1.5rem; color: #1f2937; }
+.badgeAlta { background-color: #fee2e2; color: #ef4444; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; }
+
+/* Workspace Grid */
+.workspaceGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start; }
+
+/* Lado Esquerdo - Info */
+.infoSection { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.infoSection h2 { font-size: 1.2rem; color: #111827; margin-bottom: 20px; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px; }
+.infoBlock { margin-bottom: 15px; }
+.infoBlock label { display: block; font-size: 0.85rem; color: #6b7280; font-weight: 600; margin-bottom: 4px; }
+.infoBlock p { color: #1f2937; font-size: 1.05rem; }
+.descBlock { margin-top: 25px; background-color: #f9fafb; padding: 15px; border-radius: 6px; border-left: 4px solid #d1d5db; }
+.descBlock label { display: block; font-size: 0.85rem; color: #6b7280; font-weight: 600; margin-bottom: 8px; }
+.descBlock p { color: #374151; line-height: 1.5; font-size: 0.95rem; }
+
+/* Lado Direito - Formulário */
+.resolutionSection { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-top: 4px solid #3b82f6; }
+.resolutionSection h2 { font-size: 1.2rem; color: #111827; margin-bottom: 20px; }
+.form { display: flex; flex-direction: column; gap: 20px; }
+.inputGroup { display: flex; flex-direction: column; gap: 8px; }
+.inputGroup label { font-weight: 600; color: #4b5563; font-size: 0.9rem; }
+.required { color: #ef4444; font-size: 0.8rem; margin-left: 5px; }
+.inputGroup select, .inputGroup textarea { padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; color:#4b5563; font-size: 1rem; font-family: inherit; background-color: #fff; transition: border-color 0.2s; }
+.inputGroup select:focus, .inputGroup textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+
+.buttonGroup { display: flex; justify-content: flex-end; gap: 15px; margin-top: 10px; }
+.btnCancel { background: none; border: 1px solid #d1d5db; padding: 12px 24px; border-radius: 6px; color: #4b5563; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.btnCancel:hover { background-color: #f3f4f6; }
+.btnSubmit { background-color: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
+.btnSubmit:hover { background-color: #2563eb; }

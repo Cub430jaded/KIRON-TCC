@@ -1,0 +1,157 @@
+.pageContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f7fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- MENU LATERAL (Herdado do padrão Gestor) --- */
+.sidebar {
+  width: 250px;
+  background-color: #072C5B;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+.sidebarBrand { padding: 0 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+.lightText { color: #5BB4F2; }
+.sidebarNav { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+.sidebarNav button { background: none; border: none; color: #c4d9f2; text-align: left; padding: 15px 25px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: all 0.3s; }
+.sidebarNav button:hover, .activeMenu { background-color: rgba(255,255,255,0.1); color: white !important; border-left: 4px solid #5BB4F2; }
+.sidebarFooter { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+.logoutBtn { width: 100%; background: none; border: none; color: #ff6b6b; text-align: left; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
+
+/* --- CONTEÚDO PRINCIPAL --- */
+.mainContent {
+  flex: 1;
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  overflow-y: auto;
+}
+
+.topHeader {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.topHeader h1 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Grid para Formulário e Tabela lado a lado */
+.contentGrid {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+/* --- FORMULÁRIO --- */
+.formSection {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  border-top: 4px solid #0066CC;
+}
+
+.formSection h2 { font-size: 1.2rem; color: #333; margin-bottom: 5px; }
+.formSection p { color: #777; font-size: 0.85rem; margin-bottom: 20px; line-height: 1.4; }
+
+.form { display: flex; flex-direction: column; gap: 15px; }
+
+.inputGroup { display: flex; flex-direction: column; gap: 6px; }
+.inputGroup label { font-weight: 600; color: #444; font-size: 0.9rem; }
+.inputGroup input, .inputGroup select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+.inputGroup input:focus, .inputGroup select:focus {
+  outline: none;
+  border-color: #0066CC;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+}
+
+.btnSubmit {
+  margin-top: 10px;
+  background-color: #0066CC;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.btnSubmit:hover { background-color: #004c99; }
+
+/* --- TABELA DE EQUIPAMENTOS --- */
+.listSection {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.listSection h2 { font-size: 1.2rem; color: #333; margin-bottom: 20px; }
+
+.tableWrapper { overflow-x: auto; }
+.customTable { width: 100%; border-collapse: collapse; }
+.customTable th, .customTable td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+.customTable th { color: #777; font-weight: 600; font-size: 0.9rem; }
+.customTable tr:hover { background-color: #f8fafc; }
+
+.osText { font-size: 0.8rem; color: #888; }
+
+/* Badges de Saúde (Semáforo da TI) */
+.statusBadge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.statusBadge::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.statusVerde { background-color: #e6f4ea; color: #1e8e3e; }
+.statusVerde::before { background-color: #1e8e3e; }
+
+.statusAmarelo { background-color: #fef7e0; color: #b06000; }
+.statusAmarelo::before { background-color: #b06000; }
+
+.statusVermelho { background-color: #fce8e6; color: #d93025; }
+.statusVermelho::before { background-color: #d93025; }
+
+/* Botões de Ação na Tabela */
+.btnAction, .btnDelete {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+.btnAction { color: #0066CC; margin-right: 5px; }
+.btnAction:hover { background-color: #e6f0fa; }
+.btnDelete { color: #ff6b6b; }
+.btnDelete:hover { background-color: #ffeeee; }

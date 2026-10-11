@@ -5,10 +5,13 @@ import {
     Route
 } from "react-router-dom"
 
+
 import HomeCliente from "../pages/Funcionario-Cliente/HomeCliente/HomeCliente"
 import LoginUsuario from "../pages/Publico-Usuario/LoginUsuario/LoginUsuario"
 import CadastroCliente from "../pages/Publico-Usuario/CadastroCliente/CadastroCliente"
 import HomeInstitucional from "../pages/Publico-Usuario/HomeInstitucional/HomeInstitucional"
+import RecuperarSenha from "../pages/Publico-Usuario/RecuperarSenha/RecuperarSenha"
+import Planos from "../pages/Publico-Usuario/Planos/Planos";
 
 // Importações das páginas do Gestor-Cliente
 import DashboardGestor from "../pages/Gestor-Cliente/DashboardGestor/DashboardGestor"
@@ -31,7 +34,8 @@ const AppRoutes = () => {
                 <Route path="/login" element={<LoginUsuario />} />
                 <Route path="/cadastro" element={<CadastroCliente />} />
                 <Route path="/homeCliente" element={<HomeCliente />} />
-
+                <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+                <Route path="/planos" element={<Planos />} />
                 {/* Rotas do Gestor-Cliente */}
                 <Route path="/dashboardGestor" element={<DashboardGestor />} />
                 <Route path="/chamadosGestor" element={<ChamadosGestor />} />

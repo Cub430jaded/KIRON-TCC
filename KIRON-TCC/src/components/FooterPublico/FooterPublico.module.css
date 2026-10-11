@@ -1,60 +1,134 @@
 .footer {
-  width: 100%;
-  background-color: #1a1a1a;
-  color: #fff;
-  padding: 60px 8% 20px;
-  margin-top: auto; 
+  background-color: #1A1C20; /* Tom escuro elegante e levemente azulado */
+  color: #D1D5DB; /* Texto cinza claro para não cansar a vista */
+  padding: 60px 20px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-top: auto; /* Empurra o rodapé pro fundo caso a página tenha pouco conteúdo */
 }
 
-.footerContent {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+/* O "Esquadro": Container que trava a largura e divide em 3 blocos retos */
+.footerContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr; /* A marca ocupa o dobro de espaço das outras colunas */
   gap: 40px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #334155; /* Linha sutil separando a área de cima e de baixo */
   padding-bottom: 40px;
-  margin-bottom: 20px;
+  text-align: left;
 }
 
-.footerBrand h2 {
-  font-size: 2rem;
-  margin-bottom: 15px;
-}
-
-.lightText { 
-  color: #0066CC; 
-}
-
-.footerBrand p { 
-  color: #999; 
-  max-width: 300px; 
-  line-height: 1.5; 
-}
-
-.footerLinks {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.footerLinks h4 {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-}
-
-.footerLinks a, .footerLinks p {
-  color: #999;
-  text-decoration: none;
+/* Identidade Visual */
+.footerBrand p {
+  margin: 16px 0 0 0;
+  line-height: 1.6;
   font-size: 0.95rem;
-  transition: color 0.2s;
+  max-width: 320px; /* Impede que o texto estique demais na horizontal */
 }
 
-.footerLinks a:hover { 
-  color: #0066CC; 
+.logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
 }
 
+.logoKiron {
+  color: #0066CC; /* Azul Kiron */
+}
+
+/* Títulos das colunas */
+.footerLinks h3,
+.footerContact h3 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* Lista de Links */
+.footerLinks ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footerLinks li {
+  margin-bottom: 12px;
+}
+
+.footerLinks a {
+  color: #9CA3AF;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+  font-size: 0.95rem;
+  display: inline-block;
+}
+
+.footerLinks a:hover {
+  color: #0066CC;
+  transform: translateX(5px); /* Efeito suave do link indo para a direita no hover */
+}
+
+/* Informações de Contato */
+.footerContact p {
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #9CA3AF;
+}
+
+.footerContact i {
+  color: #0066CC;
+  font-size: 1.2rem;
+}
+
+/* Sub-Rodapé (Direitos Autorais e Políticas) */
 .footerBottom {
-  text-align: center;
-  color: #666;
-  font-size: 0.9rem;
+  max-width: 1100px;
+  margin: 24px auto 0;
+  display: flex;
+  justify-content: space-between; /* Um na esquerda, outro na direita */
+  align-items: center;
+  font-size: 0.85rem;
+  color: #6B7280;
+}
+
+.legalLinks {
+  display: flex;
+  gap: 24px;
+}
+
+.legalLinks a {
+  color: #6B7280;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.legalLinks a:hover {
+  color: #D1D5DB;
+}
+
+/* Responsividade: Quebra as colunas em celulares para não espremer */
+@media (max-width: 768px) {
+  .footerContainer {
+    grid-template-columns: 1fr; /* Transforma as 3 colunas em 1 só */
+    text-align: center;
+  }
+  
+  .footerBrand p {
+    margin: 16px auto;
+  }
+
+  .footerContact p {
+    justify-content: center;
+  }
+
+  .footerBottom {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
 }

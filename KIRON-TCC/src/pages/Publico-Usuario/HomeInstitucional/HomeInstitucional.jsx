@@ -16,7 +16,7 @@ const HomeInstitucional = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setSlideAtual((prev) => (prev === imagensCarrossel.length - 1 ? 0 : prev + 1));
-    }, 5000);
+    }, 10000);
     return () => clearInterval(timer);
   }, []);
 
@@ -36,20 +36,25 @@ const HomeInstitucional = () => {
         <section className={styles.heroSection}>
           
           <div className={styles.carouselContainer}>
-            <div 
-              className={styles.carouselTrack}
-              style={{ transform: `translateX(-${slideAtual * 100}%)` }}
-            >
-              {imagensCarrossel.map((img, index) => (
-                <div key={index} className={styles.carouselSlide}>
-                  <img src={img} alt={`Banner Kiron ${index + 1}`} className={styles.carouselImage} />
-                </div>
-              ))}
-            </div>
-
+            
             <button className={`${styles.carouselBtn} ${styles.prevBtn}`} onClick={slideAnterior}>
               <i className="fa-solid fa-chevron-left"></i>
             </button>
+
+            {/* VIEWPORT: Esta div corta as imagens extras */}
+            <div className={styles.carouselViewport}>
+              <div 
+                className={styles.carouselTrack}
+                style={{ transform: `translateX(-${slideAtual * 100}%)` }}
+              >
+                {imagensCarrossel.map((img, index) => (
+                  <div key={index} className={styles.carouselSlide}>
+                    <img src={img} alt={`Banner Kiron ${index + 1}`} className={styles.carouselImage} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <button className={`${styles.carouselBtn} ${styles.nextBtn}`} onClick={proximoSlide}>
               <i className="fa-solid fa-chevron-right"></i>
             </button>
@@ -80,7 +85,6 @@ const HomeInstitucional = () => {
           </div>
         </section>
 
-        {/* Diferenciais e Como Funciona continuam iguais... */}
         <section className={styles.features}>
           <div className={styles.card}>
             <div className={styles.iconPlaceholder}>

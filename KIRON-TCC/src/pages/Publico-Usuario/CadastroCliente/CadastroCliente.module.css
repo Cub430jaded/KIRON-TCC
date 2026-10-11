@@ -1,127 +1,278 @@
-:root{
-  --card-width: 500px;
-  --card-padding: 30px;
-  --card-radius: 12px;
-  --card-shadow: 0 8px 20px rgba(0,0,0,0.12);
-}
-
+/* Estrutura Geral da Página */
 .pageWrapper {
-  min-height: 100vh;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
   display: flex;
   flex-direction: column;
-  position: relative;
-  background-image: url('/src/assets/Background.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #d4d4d4;
+  color: #333;
 }
 
 .container-fundo {
   flex: 1;
-  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 40px;
-  position: relative;
-  pointer-events: auto;
+  align-items: center;
+  padding: 30px 20px;
 }
 
+/* O Cartão Central */
 .card {
-  position: relative;
-  z-index: 10;
-  width: var(--card-width);
-  background: rgba(255,255,255,0.98);
-  padding: var(--card-padding);
-  border-radius: var(--card-radius);
-  /* stronger edge shadow + subtle outer depth */
-  box-shadow: 0 8px 24px rgba(11,35,60,0.10), 0 0 0 1px rgba(11,35,60,0.06);
-  backdrop-filter: blur(6px);
+  background: #ffffff;
+  padding: 30px 35px; /* Espaçamento interno um pouco mais compacto */
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 550px;
+  border-top: 5px solid #0066CC;
+  text-align: center;
+}
+
+.logoArea {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.logoKiron {
+  color: #0066CC;
+}
+
+.logoTi {
+  color: #333;
+}
+
+.card h1 {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 20px; /* Reduzido o espaço após o subtítulo */
+}
+
+/* Formulário em Grid */
+.form-grid {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  text-align: left;
 }
 
-.card h1{
-  margin: 0 0 18px 0;
-  font-size: 1.4rem;
-  text-align: center;
-  color: #0f4d8b; 
-}
-
-.form-grid{
+/* Organiza campos lado a lado em telas maiores */
+.rowGrid {
   display: grid;
-  grid-template-columns: 0.1fr 1.5fr;
-  gap: 12px 16px;
-  align-items: center;
-  width: 100%;
-  max-width: calc(var(--card-width) - 2 * var(--card-padding));
-  
+  grid-template-columns: 1fr 1fr;
+  gap: 12px; /* Reduzido o espaço horizontal entre colunas */
 }
 
-.form-row{
-  display: contents; 
-}
-
-.label-input{
-  justify-self: end;
-  text-align: right;
-  padding-right: 10px;
+.label-input {
   font-weight: 600;
+  font-size: 0.85rem;
+  color: #444;
+  margin-bottom: 4px; /* Reduzido o espaço entre a label e o input */
+  display: block;
 }
 
-.input-field{
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px; /* Espaço menor entre um campo e outro (antes era 16px) */
+}
+
+.input-field {
   width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
+  padding: 10px 12px; /* Padding interno um pouco mais compacto */
+  border: 1px solid #d1d5db;
   border-radius: 6px;
-  background: white;
-  color: #0d0d0d;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+}
+
+.input-field:focus {
+  border-color: #0066CC;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+}
+
+/* Posicionamento relativo para segurar o ícone de interrogação flutuante */
+.inputWrapper {
   position: relative;
-  z-index: 11;
-  pointer-events: auto;
+  display: flex;
+  align-items: center;
 }
 
-.actions{
-  grid-column: 1 / -1;
-  display:flex;
+/* Deixa a bordinha do input vermelha quando há erro */
+.inputError {
+  border-color: #dc2626 !important;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+}
+
+/* O ícone do círculo vermelho com a interrogação */
+.errorIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #dc2626;
+  color: #ffffff;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin-top: 14px;
-}
-
-.submit-btn{
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: none;
-  background: #0f4d8b;
-  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
   cursor: pointer;
+  box-shadow: 0 2px 5px rgba(220, 38, 38, 0.3);
 }
 
-.cancel-btn{
-  color: #144b81;
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: 1px solid #999;
-  background: transparent;
-  cursor: pointer;
-}
-
-.footer {
-  margin-top: auto;
+/* O balão pop-up (Tooltip) que aparece ao passar o mouse */
+.tooltipBox {
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+  bottom: 135%;
+  background-color: #1f2937;
+  color: #ffffff;
   text-align: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 20;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Seta apontando para baixo no balão */
+.tooltipBox::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 15px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #1f2937 transparent transparent transparent;
+}
+
+/* Faz o pop-up aparecer quando o usuário passa o mouse por cima da interrogação */
+.errorIcon:hover + .tooltipBox {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Caixa de aviso específica para a senha */
+.tooltipContainerPassword {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #fef2f2;
+  border: 1px solid #f87171;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 2px;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.tooltipContainerPassword .errorIcon {
+  position: static;
+  transform: none;
+  flex-shrink: 0;
+}
+
+.tooltipContainerPassword .tooltipBox {
+  visibility: visible;
+  opacity: 1;
+  position: static;
+  background: transparent;
+  color: #b91c1c;
+  box-shadow: none;
+  text-align: left;
+  white-space: normal;
+  padding: 0;
+}
+
+.tooltipContainerPassword .tooltipBox::after {
+  display: none;
+}
+
+/* Botões de Ação */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.submit-btn {
+  background-color: #0066CC;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: #0052a3;
+  transform: translateY(-1px);
+}
+
+.cancel-btn {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.cancel-btn:hover {
+  background-color: #f1f5f9;
   color: #333;
+}
+
+/* Links Adicionais no Rodapé do Card */
+.footerLinks {
+  margin-top: 15px;
   font-size: 0.9rem;
 }
 
-@media (max-width: 560px){
-  .card{ width: 100%; }
-  .form-grid{ grid-template-columns: 1fr; }
-  .label-input{ justify-self: start; text-align: left; }
-  .actions{ justify-content: stretch; }
+.linkLogin {
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.linkLogin strong {
+  color: #0066CC;
+}
+
+.linkLogin:hover strong {
+  text-decoration: underline;
+}
+
+/* Rodapé Geral da Página */
+.footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #1a1a1a;
+  color: #9ca3af;
+  font-size: 0.85rem;
 }

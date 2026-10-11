@@ -1,0 +1,164 @@
+/* Estrutura Geral da Página */
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #d4d4d4;
+  color: #333;
+}
+
+.container-fundo {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+}
+
+/* O Cartão Central */
+.card {
+  background: #ffffff;
+  padding: 30px 35px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 450px;
+  border-top: 5px solid #0066CC;
+  text-align: center;
+}
+
+.logoArea {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.logoKiron {
+  color: #0066CC;
+}
+
+.logoTi {
+  color: #333;
+}
+
+.card h1 {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+/* Formulário */
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.label-input {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #444;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+}
+
+.input-field:focus {
+  border-color: #0066CC;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+}
+
+/* Botões de Ação */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.submit-btn {
+  background-color: #0066CC;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: #0052a3;
+  transform: translateY(-1px);
+}
+
+.cancel-btn {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.cancel-btn:hover {
+  background-color: #f1f5f9;
+  color: #333;
+}
+
+/* Links Adicionais no Rodapé do Card */
+.footerLinks {
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+.linkRegister {
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.linkRegister strong {
+  color: #0066CC;
+}
+
+.linkRegister:hover strong {
+  text-decoration: underline;
+}
+
+/* Rodapé Geral da Página */
+.footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #1a1a1a;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}

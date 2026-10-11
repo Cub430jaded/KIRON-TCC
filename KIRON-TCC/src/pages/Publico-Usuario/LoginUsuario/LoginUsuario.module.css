@@ -1,127 +1,175 @@
-:root{
-  --card-width: 500px;
-  --card-padding: 30px;
-  --card-radius: 12px;
-  --card-shadow: 0 8px 20px rgba(0,0,0,0.12);
-}
-
+/* Estrutura Geral da Página */
 .pageWrapper {
-  min-height: 100vh;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
   display: flex;
   flex-direction: column;
-  position: relative;
-  background-image: url('/src/assets/Background.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #d4d4d4;
+  color: #333;
 }
 
 .container-fundo {
   flex: 1;
-  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 40px;
-  position: relative;
-  pointer-events: auto;
+  align-items: center;
+  padding: 30px 20px;
 }
 
+/* O Cartão Central */
 .card {
-  position: relative;
-  z-index: 10;
-  width: var(--card-width);
-  background: rgba(255,255,255,0.98);
-  padding: var(--card-padding);
-  border-radius: var(--card-radius);
-  /* stronger edge shadow + subtle outer depth */
-  box-shadow: 0 8px 24px rgba(11,35,60,0.10), 0 0 0 1px rgba(11,35,60,0.06);
-  backdrop-filter: blur(6px);
+  background: #ffffff;
+  padding: 30px 35px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 450px; /* Um pouco mais estreito que o cadastro, ideal para login */
+  border-top: 5px solid #0066CC; /* Cor da marca Kiron TI */
+  text-align: center;
+}
+
+.logoArea {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.logoKiron {
+  color: #0066CC;
+}
+
+.logoTi {
+  color: #333;
+}
+
+.card h1 {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Formulário */
+.form-grid {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  text-align: left;
 }
 
-.card h1{
-  margin: 0 0 18px 0;
-  font-size: 1.4rem;
-  text-align: center;
-  color: #0f4d8b; 
-}
-
-.form-grid{
-  display: grid;
-  grid-template-columns: 0.1fr 1.5fr;
-  gap: 12px 16px;
-  align-items: center;
-  width: 100%;
-  max-width: calc(var(--card-width) - 2 * var(--card-padding));
-  
-}
-
-.form-row{
-  display: contents; 
-}
-
-.label-input{
-  justify-self: end;
-  text-align: right;
-  padding-right: 10px;
+.label-input {
   font-weight: 600;
+  font-size: 0.85rem;
+  color: #444;
+  margin-bottom: 4px;
+  display: block;
 }
 
-.input-field{
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.input-field {
   width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
-  background: white;
-  color: #0d0d0d;
-  position: relative;
-  z-index: 11;
-  pointer-events: auto;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
 }
 
-.actions{
-  grid-column: 1 / -1;
-  display:flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 14px;
+.input-field:focus {
+  border-color: #0066CC;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
 }
 
-.submit-btn{
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: none;
-  background: #0f4d8b;
+/* Botões de Ação */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.submit-btn {
+  background-color: #0066CC;
   color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
-.cancel-btn{
-  color: #144b81;
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: 1px solid #999;
-  background: transparent;
-  cursor: pointer;
+.submit-btn:hover {
+  background-color: #0052a3;
+  transform: translateY(-1px);
 }
 
-.footer {
-  margin-top: auto;
-  text-align: center;
+.cancel-btn {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.cancel-btn:hover {
+  background-color: #f1f5f9;
   color: #333;
+}
+
+/* Links Adicionais no Rodapé do Card */
+.footerLinks {
+  margin-top: 20px;
   font-size: 0.9rem;
 }
 
-@media (max-width: 560px){
-  .card{ width: 100%; }
-  .form-grid{ grid-template-columns: 1fr; }
-  .label-input{ justify-self: start; text-align: left; }
-  .actions{ justify-content: stretch; }
+.linkRegister {
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.linkRegister strong {
+  color: #0066CC;
+}
+
+.linkRegister:hover strong {
+  text-decoration: underline;
+}
+
+.linkForgotPassword {
+  color: #0066cc;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: color 0.3s;
+}
+
+.linkForgotPassword:hover {
+  color: #0066CC;
+  text-decoration: underline;
+}
+
+/* Rodapé Geral da Página */
+.footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #1a1a1a;
+  color: #9ca3af;
+  font-size: 0.85rem;
 }

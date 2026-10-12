@@ -1,4 +1,4 @@
-/* ESTRUTURA GERAL (FUNDO #d4d4d4 FIXO E UNIFICADO) */
+/* ESTRUTURA GERAL (#d4d4d4 FIXO) */
 .pageWrapper {
   display: flex;
   min-height: 100vh;
@@ -7,15 +7,50 @@
   color: #1a1a1a;
 }
 
-/* SIDEBAR LATERAL */
+/* SIDEBAR LATERAL FIXA */
 .sidebar {
   width: 250px;
+  height: 100vh; /* Ocupa a altura total da janela */
+  position: fixed; /* Fica travada na tela mesmo ao rolar */
+  top: 0;
+  left: 0;
   background-color: #1a1a1a;
   color: #ffffff;
   display: flex;
   flex-direction: column;
   padding: 25px 15px;
   box-sizing: border-box;
+  flex-shrink: 0;
+  z-index: 1000; /* Garante que fica por cima de outros elementos */
+  overflow-y: auto; /* Permite rolagem dentro da sidebar se a tela for muito pequena */
+}
+
+/* CONTEÚDO PRINCIPAL (COM MARGEM PARA NÃO FICAR ATRÁS DA SIDEBAR) */
+.mainContent {
+  flex: 1;
+  margin-left: 250px; /* Desloca o conteúdo para a direita dando espaço para a sidebar */
+  padding: 30px;
+  box-sizing: border-box;
+  background-color: #d4d4d4 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: calc(100% - 250px);
+  min-width: 0;
+}
+
+/* AJUSTE PARA DISPOSITIVOS MÓVEIS / TABLETS */
+@media (max-width: 900px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .mainContent {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 .logoArea {
@@ -42,6 +77,7 @@
   gap: 12px;
   background: transparent;
   border: none;
+  outline: none;
   color: #9ca3af;
   padding: 12px 15px;
   border-radius: 6px;
@@ -58,8 +94,8 @@
 }
 
 .navItem.active {
-  background-color: #0066CC;
-  color: #ffffff;
+  background-color: #0066CC !important;
+  color: #ffffff !important;
 }
 
 .sidebarFooter {
@@ -73,6 +109,7 @@
   gap: 10px;
   background: transparent;
   border: none;
+  outline: none;
   color: #ef4444;
   font-size: 0.9rem;
   font-weight: bold;
@@ -94,6 +131,8 @@
   display: flex;
   flex-direction: column;
   gap: 25px;
+  width: 100%;
+  min-width: 0;
 }
 
 .headerBlock {
@@ -104,12 +143,14 @@
   padding: 20px 25px;
   border-radius: 8px;
   border: 2px solid #b0b0b0;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .headerBlock h1 {
   margin: 0 0 5px 0;
   font-size: 1.6rem;
-  color: #0066CC;
+  color: #1a1a1a;
 }
 
 .welcomeText {
@@ -123,7 +164,7 @@
   color: #333333;
   border: 1px solid #b0b0b0;
   border-radius: 6px;
-  padding: 10px 16px;
+  padding: 10px 18px;
   font-size: 0.9rem;
   font-weight: bold;
   cursor: pointer;
@@ -131,32 +172,30 @@
   align-items: center;
   gap: 8px;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .btnVoltar:hover {
   background-color: #e5e7eb;
 }
 
-/* SEÇÃO DO FORMULÁRIO DE PLANILHA */
+/* SEÇÃO PLANILHA */
 .sheetSection {
   background-color: #ffffff;
   border: 2px solid #b0b0b0;
   border-radius: 8px;
-  padding: 30px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .sectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   border-bottom: 2px solid #e5e7eb;
-  padding-bottom: 15px;
-  margin-bottom: 25px;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 .sectionTitle {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   color: #1a1a1a;
   margin: 0;
   display: flex;
@@ -164,26 +203,17 @@
   gap: 10px;
 }
 
-.protocolBadge {
-  background-color: #e0f2fe;
-  color: #0066CC;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  border: 1px solid #bae6fd;
-}
-
+/* FORMULÁRIO */
 .formSheet {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
 }
 
 .formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 25px;
+  gap: 20px;
 }
 
 .inputGroup, .inputGroupFull {
@@ -205,8 +235,8 @@
   color: #0066CC;
 }
 
-.inputField, .textareaField {
-  padding: 12px 14px;
+.selectField, .textareaField {
+  padding: 12px;
   border: 1px solid #b0b0b0;
   border-radius: 6px;
   font-size: 0.95rem;
@@ -214,9 +244,11 @@
   color: #1a1a1a;
   outline: none;
   transition: all 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.inputField:focus, .textareaField:focus {
+.selectField:focus, .textareaField:focus {
   border-color: #0066CC;
   box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
   background-color: #ffffff;
@@ -226,144 +258,37 @@
   resize: vertical;
 }
 
-/* CARDS DE SELEÇÃO VISUAL DE PRIORIDADE */
-.priorityGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.priorityCard {
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  padding: 10px;
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: #4b5563;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: all 0.2s;
-}
-
-.priorityCard:hover {
-  transform: translateY(-1px);
-}
-
-.priorityLow.selectedPriority {
-  background-color: #f3f4f6;
-  border-color: #6b7280;
-  color: #1f2937;
-  box-shadow: 0 0 0 2px #6b7280;
-}
-
-.priorityMedium.selectedPriority {
-  background-color: #fef3c7;
-  border-color: #d97706;
-  color: #b45309;
-  box-shadow: 0 0 0 2px #d97706;
-}
-
-.priorityHigh.selectedPriority {
-  background-color: #fee2e2;
-  border-color: #dc2626;
-  color: #b91c1c;
-  box-shadow: 0 0 0 2px #dc2626;
-}
-
-/* DROPZONE DE ARQUIVO */
-.fileDropZone {
-  position: relative;
-  border: 2px dashed #b0b0b0;
-  border-radius: 8px;
-  padding: 25px;
-  text-align: center;
-  background-color: #f9fafb;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-
-.fileDropZone:hover {
-  border-color: #0066CC;
-  background-color: #f0f7ff;
-}
-
-.fileDropZone i {
-  font-size: 2rem;
-  color: #0066CC;
-}
-
-.fileDropText {
-  font-size: 0.9rem;
-  color: #374151;
-}
-
-.fileHint {
-  font-size: 0.75rem;
-  color: #6b7280;
-}
-
-.hiddenFileInput {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.selectedFileName {
-  margin-top: 8px;
-  background-color: #dcfce7;
-  color: #15803d;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: bold;
-  border: 1px solid #bbf7d0;
-}
-
-/* AÇÕES DO FORMULÁRIO */
 .formActions {
   display: flex;
   gap: 15px;
-  margin-top: 10px;
+  justify-content: flex-end;
   border-top: 1px solid #e5e7eb;
   padding-top: 20px;
 }
 
 .btnSubmit {
   background-color: #0066CC;
-  color: white;
+  color: #ffffff;
   border: none;
   border-radius: 6px;
-  padding: 12px 25px;
+  padding: 12px 24px;
   font-size: 0.95rem;
   font-weight: bold;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: background-color 0.2s;
 }
 
 .btnSubmit:hover {
   background-color: #0052a3;
-  transform: translateY(-1px);
 }
 
 .btnCancel {
-  background-color: #e5e7eb;
-  color: #374151;
-  border: none;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #b0b0b0;
   border-radius: 6px;
   padding: 12px 20px;
   font-size: 0.95rem;
@@ -373,12 +298,26 @@
 }
 
 .btnCancel:hover {
-  background-color: #d1d5db;
+  background-color: #e5e7eb;
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
+/* RESPONSIVIDADE */
+@media (max-width: 900px) {
+  .pageWrapper {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    padding: 15px;
+  }
   .formRow {
     grid-template-columns: 1fr;
+  }
+  .navMenu {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .sidebarFooter {
+    display: none;
   }
 }

@@ -5,12 +5,20 @@ import styles from './AbrirChamado.module.css';
 const AbrirChamado = () => {
   const navigate = useNavigate();
 
-  const [titulo, setTitulo] = useState('');
-  const [dispositivo, setDispositivo] = useState('');
-  const [prioridade, setPrioridade] = useState('Média');
+  // Estados dos Campos do Formulário conforme especificação do TCC
+  const [equipamento, setEquipamento] = useState('');
   const [categoria, setCategoria] = useState('Hardware');
+  const [urgencia, setUrgencia] = useState('Média');
   const [descricao, setDescricao] = useState('');
-  const [arquivo, setArquivo] = useState(null);
+
+  // Lista de Equipamentos (Simulando o consumo de GET /api/equipamentos)
+  const [listaEquipamentos, setListaEquipamentos] = useState([
+    { id: '1', nome: 'Notebook Dell - ID #1' },
+    { id: '2', nome: 'PC Desktop Recepção - ID #2' },
+    { id: '3', nome: 'PC Desktop Financeiro - ID #3' },
+    { id: '4', nome: 'Servidor Local Data Center - ID #4' },
+    { id: '5', nome: 'Impressora HP Laser - ID #5' }
+  ]);
 
   useEffect(() => {
     // Validação da Sessão do Usuário
@@ -22,58 +30,61 @@ const AbrirChamado = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('kiron_usuario_logado');
+    localStorage.removeItem('kiron_usuario_logado_dados');
     navigate('/Login');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // 1. Gera protocolo único aleatório
-    const numeroAleatorio = Math.floor(1000 + Math.random() * 9000);
-    const novoProtocolo = `#KR-${numeroAleatorio}`;
-    const dataAtual = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+    if (!equipamento) {
+      alert('Por favor, selecione o equipamento afetado.');
+      return;
+    }
 
-    // 2. Cria estrutura do novo chamado mantendo todos os campos
-    const novoChamado = {
+    // Pega dados do usuário logado
+    const usuarioLogado = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+    const nomeSolicitante = usuarioLogado?.nome || 'Bruno Silva';
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
+
+    // Gera ID / Protocolo único
+    const numeroId = Math.floor(1000 + Math.random() * 9000);
+    const novoProtocolo = `#KR-${numeroId}`;
+
+    // Estrutura completa do chamado conforme padrão do TCC
+    const novoTicket = {
+      id: `KR-${numeroId}`,
       protocolo: novoProtocolo,
-      assunto: titulo,
+      equipamento: equipamento,
       categoria: categoria,
-      dispositivo: dispositivo,
-      prioridade: prioridade,
-      status: 'Em Atendimento',
+      urgencia: urgencia,
+      prioridade: urgencia, // para compatibilidade de termos
+      status: 'Aberto',
       dataAbertura: dataAtual,
-      solicitante: 'Bruno Silva (Gestor)',
-      tecnicoResponsavel: 'Suporte Kiron TI',
-      descricaoInicial: descricao,
+      solicitante: nomeSolicitante,
+      descricao: descricao,
+      parecerTecnico: '', // Será preenchido pelo técnico no fechamento
       historico: [
         {
-          autor: 'Bruno Silva',
-          papel: 'Cliente',
-          data: dataAtual,
-          mensagem: `Chamado aberto. Relato: ${descricao}`,
-        },
-        {
-          autor: 'Suporte Kiron TI',
-          papel: 'Suporte Kiron TI',
-          data: dataAtual,
-          mensagem: 'Ticket recebido com sucesso pela nossa equipe técnica. Em breve entraremos em contato.',
+          dataHora: `${dataAtual} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
+          evento: 'Aberto pelo cliente',
+          descricao: `Chamado registrado por ${nomeSolicitante}.`
         }
       ]
     };
 
-    // 3. Salva no localStorage preservando o histórico existente
+    // Grava no localStorage
     const chamadosSalvos = JSON.parse(localStorage.getItem('kiron_lista_chamados')) || [];
-    const novaLista = [novoChamado, ...chamadosSalvos];
+    const novaLista = [novoTicket, ...chamadosSalvos];
     localStorage.setItem('kiron_lista_chamados', JSON.stringify(novaLista));
 
-    alert(`Chamado ${novoProtocolo} aberto com sucesso! Redirecionando para seus chamados.`);
+    // Redireciona para a lista de chamados
     navigate('/MeusChamados');
   };
 
   return (
     <div className={styles.pageWrapper}>
-      
-      {/* BARRA LATERAL (SIDEBAR) */}
+      {/* SIDEBAR PADRÃO */}
       <aside className={styles.sidebar}>
         <div className={styles.logoArea} onClick={() => navigate('/HomeCliente')}>
           <span className={styles.logoKiron}>Kiron</span>
@@ -108,158 +119,110 @@ const AbrirChamado = () => {
         {/* CABEÇALHO */}
         <header className={styles.headerBlock}>
           <div>
-            <h1>Novo Chamado Técnico</h1>
-            <p className={styles.welcomeText}>Preencha as informações para encaminhar sua solicitação à equipe Kiron TI</p>
+            <h1>Abrir Novo Chamado</h1>
+            <p className={styles.welcomeText}>Preencha os dados abaixo para registrar sua solicitação técnica</p>
           </div>
           <button className={styles.btnVoltar} onClick={() => navigate('/HomeCliente')}>
             <i className="fa-solid fa-arrow-left"></i> Voltar ao Dashboard
           </button>
         </header>
 
-        {/* FORMULÁRIO ESTILO PLANILHA EXECUTIVA */}
+        {/* FORMULÁRIO */}
         <section className={styles.sheetSection}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
-              <i className="fa-solid fa-file-signature"></i> Formulário de Abertura de Ticket
+              <i className="fa-solid fa-pen-to-square"></i> Detalhes da Solicitação
             </h2>
-            <span className={styles.protocolBadge}>
-              <i className="fa-solid fa-hashtag"></i> Gerando Protocolo Automático
-            </span>
           </div>
 
           <form onSubmit={handleSubmit} className={styles.formSheet}>
             
-            {/* LINHA 1: TÍTULO E DISPOSITIVO */}
-            <div className={styles.formRow}>
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>
-                  <i className="fa-solid fa-pen-to-square"></i> Título / Assunto Resumido:
-                </label>
-                <input 
-                  type="text" 
-                  className={styles.inputField} 
-                  placeholder="Ex: Lentidão intermitente no sistema de faturamento"
-                  value={titulo}
-                  onChange={(e) => setTitulo(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>
-                  <i className="fa-solid fa-desktop"></i> Dispositivo Afetado:
-                </label>
-                <select 
-                  className={styles.inputField}
-                  value={dispositivo}
-                  onChange={(e) => setDispositivo(e.target.value)}
-                  required
-                >
-                  <option value="">Selecione o equipamento cadastrado...</option>
-                  <option value="PC-RECEPCAO-01">PC-RECEPCAO-01 (Recepção)</option>
-                  <option value="PC-FINANCEIRO-02">PC-FINANCEIRO-02 (Financeiro)</option>
-                  <option value="SERVIDOR-LOCAL">SERVIDOR-LOCAL (Data Center)</option>
-                  <option value="Outro">Outro equipamento / Problema Geral</option>
-                </select>
-              </div>
+            {/* SELECT DE EQUIPAMENTO (GET /api/equipamentos) */}
+            <div className={styles.inputGroup}>
+              <label className={styles.label} htmlFor="selectEquipamento">
+                <i className="fa-solid fa-desktop"></i> Equipamento Afetado:
+              </label>
+              <select
+                id="selectEquipamento"
+                className={styles.selectField}
+                value={equipamento}
+                onChange={(e) => setEquipamento(e.target.value)}
+                required
+              >
+                <option value="">-- Selecione o equipamento cadastrado --</option>
+                {listaEquipamentos.map((item) => (
+                  <option key={item.id} value={item.nome}>
+                    {item.nome}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {/* LINHA 2: CATEGORIA E SELETOR VISUAL DE PRIORIDADE */}
+            {/* SELECT DE CATEGORIA & SELECT DE URGÊNCIA (GRID DUPLO) */}
             <div className={styles.formRow}>
               <div className={styles.inputGroup}>
-                <label className={styles.label}>
-                  <i className="fa-solid fa-layer-group"></i> Categoria do Incidente:
+                <label className={styles.label} htmlFor="selectCategoria">
+                  <i className="fa-solid fa-list"></i> Categoria do Problema:
                 </label>
-                <select 
-                  className={styles.inputField}
+                <select
+                  id="selectCategoria"
+                  className={styles.selectField}
                   value={categoria}
                   onChange={(e) => setCategoria(e.target.value)}
+                  required
                 >
-                  <option value="Hardware">Hardware / Peças / Periféricos</option>
-                  <option value="Software">Software / Programas / Sistema Operacional</option>
-                  <option value="Rede">Rede / Conectividade / Internet</option>
-                  <option value="Segurança">Segurança / Antivírus / Backup</option>
-                  <option value="Outros">Outros assuntos / Dúvidas</option>
+                  <option value="Hardware">Hardware</option>
+                  <option value="Software">Software</option>
+                  <option value="Rede">Rede</option>
+                  <option value="Impressora">Impressora</option>
+                  <option value="Acesso/Senha">Acesso / Senha</option>
                 </select>
               </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.label}>
-                  <i className="fa-solid fa-triangle-exclamation"></i> Nível de Prioridade:
+                <label className={styles.label} htmlFor="selectUrgencia">
+                  <i className="fa-solid fa-triangle-exclamation"></i> Nível de Urgência:
                 </label>
-                <div className={styles.priorityGrid}>
-                  <button
-                    type="button"
-                    className={`${styles.priorityCard} ${styles.priorityLow} ${prioridade === 'Baixa' ? styles.selectedPriority : ''}`}
-                    onClick={() => setPrioridade('Baixa')}
-                  >
-                    <i className="fa-solid fa-arrow-down"></i> Baixa
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`${styles.priorityCard} ${styles.priorityMedium} ${prioridade === 'Média' ? styles.selectedPriority : ''}`}
-                    onClick={() => setPrioridade('Média')}
-                  >
-                    <i className="fa-solid fa-minus"></i> Média
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`${styles.priorityCard} ${styles.priorityHigh} ${prioridade === 'Alta' ? styles.selectedPriority : ''}`}
-                    onClick={() => setPrioridade('Alta')}
-                  >
-                    <i className="fa-solid fa-fire"></i> Alta / Urgente
-                  </button>
-                </div>
+                <select
+                  id="selectUrgencia"
+                  className={styles.selectField}
+                  value={urgencia}
+                  onChange={(e) => setUrgencia(e.target.value)}
+                  required
+                >
+                  <option value="Baixa">Baixa</option>
+                  <option value="Média">Média</option>
+                  <option value="Alta">Alta</option>
+                </select>
               </div>
             </div>
 
-            {/* DESCRIÇÃO DO PROBLEMA */}
+            {/* CAMPO DE DESCRIÇÃO (TEXTAREA) */}
             <div className={styles.inputGroupFull}>
-              <label className={styles.label}>
-                <i className="fa-solid fa-align-left"></i> Descrição Detalhada da Ocorrência:
+              <label className={styles.label} htmlFor="textDescricao">
+                <i className="fa-solid fa-align-left"></i> Descrição do Problema:
               </label>
-              <textarea 
-                className={styles.textareaField} 
-                rows="5"
-                placeholder="Detalhe o que está acontecendo, mensagens de erro exibidas, horários do problema e passos para reproduzir..."
+              <textarea
+                id="textDescricao"
+                className={styles.textareaField}
+                rows="6"
+                placeholder="Descreva o problema com clareza (ex: A tela fica piscando ao abrir a planilha de faturamento)..."
                 value={descricao}
                 onChange={(e) => setDescricao(e.target.value)}
                 required
               ></textarea>
             </div>
 
-            {/* ÁREA DE UPLOAD DE ANEXOS MODERNA */}
-            <div className={styles.inputGroupFull}>
-              <label className={styles.label}>
-                <i className="fa-solid fa-paperclip"></i> Anexar Capturas de Tela / Evidências:
-              </label>
-              <div className={styles.fileDropZone}>
-                <i className="fa-solid fa-cloud-arrow-up"></i>
-                <div className={styles.fileDropText}>
-                  <strong>Clique para selecionar um arquivo</strong> ou arraste até aqui
-                </div>
-                <span className={styles.fileHint}>Formatos aceitos: PNG, JPG, PDF (Tamanho máximo: 10MB)</span>
-                <input 
-                  type="file" 
-                  className={styles.hiddenFileInput}
-                  onChange={(e) => setArquivo(e.target.files[0])}
-                />
-                {arquivo && (
-                  <div className={styles.selectedFileName}>
-                    <i className="fa-solid fa-file-check"></i> Arquivo selecionado: <strong>{arquivo.name}</strong>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* AÇÕES */}
+            {/* AÇÕES DE ENVIO E CANCELAMENTO */}
             <div className={styles.formActions}>
               <button type="submit" className={styles.btnSubmit}>
-                <i className="fa-solid fa-check"></i> Finalizar e Enviar Chamado
+                <i className="fa-solid fa-paper-plane"></i> Enviar Chamado
               </button>
-              <button type="button" className={styles.btnCancel} onClick={() => navigate('/HomeCliente')}>
+              <button
+                type="button"
+                className={styles.btnCancel}
+                onClick={() => navigate('/MeusChamados')}
+              >
                 Cancelar
               </button>
             </div>
@@ -268,7 +231,6 @@ const AbrirChamado = () => {
         </section>
 
       </main>
-
     </div>
   );
 };

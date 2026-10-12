@@ -1,4 +1,4 @@
-/* ESTRUTURA GERAL DA PÁGINA (FUNDO #d4d4d4 FIXO E UNIFICADO) */
+/* ESTRUTURA GERAL (FUNDO #d4d4d4 FIXO) */
 .pageWrapper {
   display: flex;
   min-height: 100vh;
@@ -7,15 +7,50 @@
   color: #1a1a1a;
 }
 
-/* SIDEBAR LATERAL */
+/* SIDEBAR LATERAL FIXA */
 .sidebar {
   width: 250px;
+  height: 100vh; /* Ocupa a altura total da janela */
+  position: fixed; /* Fica travada na tela mesmo ao rolar */
+  top: 0;
+  left: 0;
   background-color: #1a1a1a;
   color: #ffffff;
   display: flex;
   flex-direction: column;
   padding: 25px 15px;
   box-sizing: border-box;
+  flex-shrink: 0;
+  z-index: 1000; /* Garante que fica por cima de outros elementos */
+  overflow-y: auto; /* Permite rolagem dentro da sidebar se a tela for muito pequena */
+}
+
+/* CONTEÚDO PRINCIPAL (COM MARGEM PARA NÃO FICAR ATRÁS DA SIDEBAR) */
+.mainContent {
+  flex: 1;
+  margin-left: 250px; /* Desloca o conteúdo para a direita dando espaço para a sidebar */
+  padding: 30px;
+  box-sizing: border-box;
+  background-color: #d4d4d4 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: calc(100% - 250px);
+  min-width: 0;
+}
+
+/* AJUSTE PARA DISPOSITIVOS MÓVEIS / TABLETS */
+@media (max-width: 900px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .mainContent {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 .logoArea {
@@ -42,6 +77,7 @@
   gap: 12px;
   background: transparent;
   border: none;
+  outline: none;
   color: #9ca3af;
   padding: 12px 15px;
   border-radius: 6px;
@@ -58,8 +94,8 @@
 }
 
 .navItem.active {
-  background-color: #0066CC;
-  color: #ffffff;
+  background-color: #0066CC !important;
+  color: #ffffff !important;
 }
 
 .sidebarFooter {
@@ -73,6 +109,7 @@
   gap: 10px;
   background: transparent;
   border: none;
+  outline: none;
   color: #ef4444;
   font-size: 0.9rem;
   font-weight: bold;
@@ -94,6 +131,8 @@
   display: flex;
   flex-direction: column;
   gap: 25px;
+  width: 100%;
+  min-width: 0;
 }
 
 .headerBlock {
@@ -104,6 +143,8 @@
   padding: 20px 25px;
   border-radius: 8px;
   border: 2px solid #b0b0b0;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .headerBlock h1 {
@@ -116,14 +157,17 @@
   margin: 0;
   color: #555555;
   font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.btnNovoChamado {
+.btnDestaque {
   background-color: #0066CC;
-  color: white;
+  color: #ffffff;
   border: none;
   border-radius: 6px;
-  padding: 12px 20px;
+  padding: 12px 22px;
   font-size: 0.95rem;
   font-weight: bold;
   cursor: pointer;
@@ -131,51 +175,111 @@
   align-items: center;
   gap: 8px;
   transition: background-color 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 102, 204, 0.3);
+  white-space: nowrap;
 }
 
-.btnNovoChamado:hover {
+.btnDestaque:hover {
   background-color: #0052a3;
 }
 
-/* SEÇÃO ESTILO PLANILHA */
-.sheetSection {
+/* 3 CARDS DE RESUMO */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.summaryCard {
   background-color: #ffffff;
   border: 2px solid #b0b0b0;
   border-radius: 8px;
   padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.sheetHeader {
+.cardIcon {
+  width: 55px;
+  height: 55px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.iconAberto { background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+.iconAndamento { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+.iconConcluido { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.cardNumber {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  line-height: 1.1;
+}
+
+.cardLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* SEÇÃO DA TABELA / LISTA RÁPIDA */
+.sheetSection {
+  background-color: #ffffff;
+  border: 2px solid #b0b0b0;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.sectionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 12px;
 }
 
 .sectionTitle {
   font-size: 1.15rem;
   color: #1a1a1a;
-  margin: 0 0 15px 0;
+  margin: 0;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.linkBtn {
+.linkVerTodos {
   background: transparent;
   border: none;
   color: #0066CC;
   font-weight: bold;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   cursor: pointer;
 }
 
-.linkBtn:hover {
+.linkVerTodos:hover {
   text-decoration: underline;
 }
 
-/* ESTILIZAÇÃO COMPLETA DA PLANILHA/TABELA */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .sheetTable {
   width: 100%;
   border-collapse: collapse;
@@ -189,6 +293,7 @@
   padding: 12px 15px;
   font-weight: 600;
   border: 1px solid #1a1a1a;
+  white-space: nowrap;
 }
 
 .sheetTable td {
@@ -202,15 +307,21 @@
   background-color: #f9fafb;
 }
 
-.sheetTable tbody tr:hover td {
-  background-color: #f0f7ff;
-}
-
 .codeCell {
   font-family: monospace;
   font-weight: bold;
   color: #0066CC;
 }
+
+.badgeStatus {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+.badgeAberto { background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+.badgeEmAndamento { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+.badgeConcluido { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
 
 .actionBtn {
   background-color: #0066CC;
@@ -221,60 +332,41 @@
   font-size: 0.8rem;
   font-weight: bold;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
 .actionBtn:hover {
   background-color: #0052a3;
 }
 
-/* BADGES DE STATUS E PRIORIDADES */
-.badgeSuccess {
-  background-color: #dcfce7;
-  color: #15803d;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 0.8rem;
-  border: 1px solid #bbf7d0;
+.noResults {
+  text-align: center;
+  padding: 25px !important;
+  color: #6b7280;
+  font-weight: 600;
 }
 
-.badgeWarning {
-  background-color: #fef3c7;
-  color: #b45309;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 0.8rem;
-  border: 1px solid #fde68a;
+/* RESPONSIVIDADE */
+@media (max-width: 900px) {
+  .pageWrapper {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    padding: 15px;
+  }
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+  .navMenu {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .sidebarFooter {
+    display: none;
+  }
 }
-
-.badgeDanger {
-  background-color: #fee2e2;
-  color: #b91c1c;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 0.8rem;
-  border: 1px solid #fca5a5;
-}
-
-.badgePriority {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: bold;
-}
-.high { background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
-.medium { background-color: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
-.low { background-color: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
-
-.badgeStatus {
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: bold;
-}
-.inProgress { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
-.pending { background-color: #fefce8; color: #a16207; border: 1px solid #fef08a; }
-.done { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }

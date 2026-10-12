@@ -5,102 +5,105 @@ import styles from './MeusChamados.module.css';
 const MeusChamados = () => {
   const navigate = useNavigate();
 
-  // Estados de Filtro e Busca
-  const [busca, setBusca] = useState('');
+  // Estado do Filtro Ativo por Status
   const [filtroStatus, setFiltroStatus] = useState('Todos');
-  const [filtroPrioridade, setFiltroPrioridade] = useState('Todas');
   const [listaChamados, setListaChamados] = useState([]);
 
   useEffect(() => {
-    // Validação da Sessão do Usuário
+    // Validação de Sessão
     const estaLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
     if (!estaLogado) {
       navigate('/Login');
       return;
     }
 
-    // Lista Inicial Padrão
+    // Carrega a lista do localStorage ou inicializa os dados padrão
     const chamadosIniciais = [
       {
+        id: 'KR-8021',
         protocolo: '#KR-8021',
-        assunto: 'Lentidão na rede do setor Financeiro',
+        equipamento: 'PC-FINANCEIRO-02',
         categoria: 'Rede',
-        dispositivo: 'PC-FINANCEIRO-02',
-        prioridade: 'Alta',
-        status: 'Em Atendimento',
-        dataAbertura: '12/10/2026 - 10:15',
-        solicitante: 'Bruno Silva (Gestor)',
-        tecnicoResponsavel: 'Carlos Eduardo (Suporte Nível 2)',
-        descricaoInicial: 'Os computadores do setor financeiro estão apresentando quedas intermitentes de conexão.',
+        status: 'Em Andamento',
+        dataAbertura: '12/10/2026',
+        assunto: 'Lentidão na rede do setor Financeiro',
+        solicitante: 'Bruno Silva',
+        descricao: 'Os computadores do setor financeiro estão com quedas intermitentes.',
+        parecerTecnico: '',
         historico: [
-          { autor: 'Bruno Silva', papel: 'Cliente', data: '12/10/2026 - 10:15', mensagem: 'Chamado aberto.' }
+          { dataHora: '12/10/2026 às 10:15', evento: 'Aberto pelo cliente', descricao: 'Chamado registrado.' },
+          { dataHora: '12/10/2026 às 10:35', evento: 'Técnico assumiu', descricao: 'Analisando porta do switch.' }
         ]
       },
       {
+        id: 'KR-8019',
         protocolo: '#KR-8019',
-        assunto: 'Instalação de software de edição no PC-04',
+        equipamento: 'PC-RECEPCAO-01',
         categoria: 'Software',
-        dispositivo: 'PC-RECEPCAO-01',
-        prioridade: 'Baixa',
-        status: 'Pendente',
-        dataAbertura: '11/10/2026 - 16:40',
+        status: 'Aberto',
+        dataAbertura: '11/10/2026',
+        assunto: 'Instalação de software de edição no PC-04',
         solicitante: 'Lucas Patrick',
-        tecnicoResponsavel: 'Aguardando Atribuição',
-        descricaoInicial: 'Solicitação de licença para pacote gráfico.',
+        descricao: 'Solicitação de instalação e licença para pacote gráfico.',
+        parecerTecnico: '',
         historico: [
-          { autor: 'Lucas Patrick', papel: 'Cliente', data: '11/10/2026 - 16:40', mensagem: 'Aguardando aprovação.' }
+          { dataHora: '11/10/2026 às 16:40', evento: 'Aberto pelo cliente', descricao: 'Aguardando atribuição.' }
         ]
       },
       {
+        id: 'KR-7994',
         protocolo: '#KR-7994',
-        assunto: 'Configuração de rotina de backup em nuvem',
+        equipamento: 'SERVIDOR-LOCAL',
         categoria: 'Segurança',
-        dispositivo: 'SERVIDOR-LOCAL',
-        prioridade: 'Média',
         status: 'Concluído',
-        dataAbertura: '09/10/2026 - 09:00',
+        dataAbertura: '09/10/2026',
+        assunto: 'Configuração de rotina de backup em nuvem',
         solicitante: 'Diego Bryan',
-        tecnicoResponsavel: 'Mariana Costa (Infraestrutura)',
-        descricaoInicial: 'Configuração do job diário de backup redundante.',
+        descricao: 'Ajuste de agendamento diário do backup automático.',
+        parecerTecnico: 'Rotina de backup diário configurada e testada no servidor com redundância na nuvem AWS.',
         historico: [
-          { autor: 'Diego Bryan', papel: 'Cliente', data: '09/10/2026 - 09:00', mensagem: 'Solicito a verificação.' }
+          { dataHora: '09/10/2026 às 09:00', evento: 'Aberto pelo cliente', descricao: 'Solicitação registrada.' },
+          { dataHora: '09/10/2026 às 09:30', evento: 'Técnico assumiu', descricao: 'Mariana Costa iniciou a configuração.' },
+          { dataHora: '09/10/2026 às 11:30', evento: 'Concluído', descricao: 'Backup validado e chamado encerrado.' }
         ]
       }
     ];
 
-    const chamadosSalvos = JSON.parse(localStorage.getItem('kiron_lista_chamados'));
-    if (!chamadosSalvos || chamadosSalvos.length === 0) {
+    const salvos = JSON.parse(localStorage.getItem('kiron_lista_chamados'));
+    if (!salvos || salvos.length === 0) {
       localStorage.setItem('kiron_lista_chamados', JSON.stringify(chamadosIniciais));
       setListaChamados(chamadosIniciais);
     } else {
-      setListaChamados(chamadosSalvos);
+      setListaChamados(salvos);
     }
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('kiron_usuario_logado');
+    localStorage.removeItem('kiron_usuario_logado_dados');
     navigate('/Login');
   };
 
-  // Lógica de Filtragem
-  const chamadosFiltrados = listaChamados.filter((chamado) => {
-    const atendeBusca =
-      chamado.protocolo.toLowerCase().includes(busca.toLowerCase()) ||
-      chamado.assunto.toLowerCase().includes(busca.toLowerCase()) ||
-      chamado.dispositivo.toLowerCase().includes(busca.toLowerCase());
-
-    const atendeStatus =
-      filtroStatus === 'Todos' || chamado.status === filtroStatus;
-
-    const atendePrioridade =
-      filtroPrioridade === 'Todas' || chamado.prioridade === filtroPrioridade;
-
-    return atendeBusca && atendeStatus && atendePrioridade;
+  // Filtragem conforme a aba selecionada
+  const chamadosFiltrados = listaChamados.filter((item) => {
+    if (filtroStatus === 'Todos') return true;
+    const st = (item.status || '').toLowerCase();
+    if (filtroStatus === 'Abertos') return st.includes('aberto') || st.includes('pendente');
+    if (filtroStatus === 'Em Andamento') return st.includes('andamento') || st.includes('atendimento');
+    if (filtroStatus === 'Concluídos') return st.includes('concluído') || st.includes('finalizado');
+    return true;
   });
+
+  const getBadgeClass = (status) => {
+    const st = (status || '').toLowerCase();
+    if (st.includes('aberto') || st.includes('pendente')) return styles.badgeAberto;
+    if (st.includes('andamento') || st.includes('atendimento')) return styles.badgeEmAndamento;
+    return styles.badgeConcluido;
+  };
 
   return (
     <div className={styles.pageWrapper}>
-      {/* BARRA LATERAL (SIDEBAR) */}
+      {/* SIDEBAR PADRÃO */}
       <aside className={styles.sidebar}>
         <div className={styles.logoArea} onClick={() => navigate('/HomeCliente')}>
           <span className={styles.logoKiron}>Kiron</span>
@@ -131,71 +134,56 @@ const MeusChamados = () => {
 
       {/* CONTEÚDO PRINCIPAL */}
       <main className={styles.mainContent}>
+        
         {/* CABEÇALHO DA PÁGINA */}
         <header className={styles.headerBlock}>
           <div>
-            <h1>Gerenciamento de Chamados</h1>
-            <p className={styles.welcomeText}>
-              Consulte e acompanhe o histórico completo dos tickets da sua empresa
-            </p>
+            <h1>Meus Chamados</h1>
+            <p className={styles.welcomeText}>Acompanhe o andamento e histórico de todas as suas solicitações</p>
           </div>
           <button className={styles.btnNovoChamado} onClick={() => navigate('/AbrirChamado')}>
-            <i className="fa-solid fa-plus"></i> Abrir Novo Chamado
+            <i className="fa-solid fa-plus-circle"></i> Abrir Novo Chamado
           </button>
         </header>
 
-        {/* BARRA DE FILTROS E PESQUISA DA PLANILHA */}
-        <section className={styles.filterSection}>
-          <div className={styles.searchBox}>
-            <i className="fa-solid fa-magnifying-glass"></i>
-            <input
-              type="text"
-              placeholder="Buscar por protocolo, assunto ou dispositivo..."
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-              className={styles.searchInput}
-            />
-          </div>
-
-          <div className={styles.filterGroup}>
-            <div className={styles.filterSelectWrapper}>
-              <label><i className="fa-solid fa-filter"></i> Status:</label>
-              <select
-                value={filtroStatus}
-                onChange={(e) => setFiltroStatus(e.target.value)}
-                className={styles.filterSelect}
-              >
-                <option value="Todos">Todos os Status</option>
-                <option value="Em Atendimento">Em Atendimento</option>
-                <option value="Pendente">Pendente</option>
-                <option value="Concluído">Concluído</option>
-              </select>
-            </div>
-
-            <div className={styles.filterSelectWrapper}>
-              <label><i className="fa-solid fa-triangle-exclamation"></i> Prioridade:</label>
-              <select
-                value={filtroPrioridade}
-                onChange={(e) => setFiltroPrioridade(e.target.value)}
-                className={styles.filterSelect}
-              >
-                <option value="Todas">Todas as Prioridades</option>
-                <option value="Baixa">Baixa</option>
-                <option value="Média">Média</option>
-                <option value="Alta">Alta</option>
-              </select>
-            </div>
+        {/* FILTROS RÁPIDOS (ABAS POR STATUS) */}
+        <section className={styles.filterTabsSection}>
+          <div className={styles.tabsContainer}>
+            <button
+              className={`${styles.tabBtn} ${filtroStatus === 'Todos' ? styles.activeTab : ''}`}
+              onClick={() => setFiltroStatus('Todos')}
+            >
+              Todos ({listaChamados.length})
+            </button>
+            <button
+              className={`${styles.tabBtn} ${filtroStatus === 'Abertos' ? styles.activeTab : ''}`}
+              onClick={() => setFiltroStatus('Abertos')}
+            >
+              Abertos
+            </button>
+            <button
+              className={`${styles.tabBtn} ${filtroStatus === 'Em Andamento' ? styles.activeTab : ''}`}
+              onClick={() => setFiltroStatus('Em Andamento')}
+            >
+              Em Andamento
+            </button>
+            <button
+              className={`${styles.tabBtn} ${filtroStatus === 'Concluídos' ? styles.activeTab : ''}`}
+              onClick={() => setFiltroStatus('Concluídos')}
+            >
+              Concluídos
+            </button>
           </div>
         </section>
 
-        {/* TABELA PLANILHA EXECUTIVA */}
+        {/* TABELA DE CHAMADOS */}
         <section className={styles.sheetSection}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
-              <i className="fa-solid fa-table-list"></i> Histórico de Registros
+              <i className="fa-solid fa-list-check"></i> Histórico de Chamados
             </h2>
             <span className={styles.counterBadge}>
-              Exibindo {chamadosFiltrados.length} de {listaChamados.length} chamados
+              Exibindo {chamadosFiltrados.length} registro(s)
             </span>
           </div>
 
@@ -203,66 +191,50 @@ const MeusChamados = () => {
             <table className={styles.sheetTable}>
               <thead>
                 <tr>
-                  <th>Protocolo</th>
-                  <th>Assunto / Ocorrência</th>
-                  <th>Categoria</th>
+                  <th>Número do Ticket</th>
                   <th>Equipamento</th>
-                  <th>Prioridade</th>
+                  <th>Categoria</th>
+                  <th>Data de Abertura</th>
                   <th>Status</th>
-                  <th>Abertura</th>
                   <th>Ação</th>
                 </tr>
               </thead>
               <tbody>
                 {chamadosFiltrados.length > 0 ? (
-                  chamadosFiltrados.map((item, idx) => (
-                    <tr key={idx}>
-                      <td className={styles.codeCell}>{item.protocolo}</td>
-                      <td><strong>{item.assunto}</strong></td>
-                      <td>{item.categoria}</td>
-                      <td>{item.dispositivo}</td>
-                      <td>
-                        <span
-                          className={`${styles.badgePriority} ${
-                            item.prioridade === 'Alta'
-                              ? styles.high
-                              : item.prioridade === 'Média'
-                              ? styles.medium
-                              : styles.low
-                          }`}
-                        >
-                          {item.prioridade}
-                        </span>
-                      </td>
-                      <td>
-                        <span
-                          className={`${styles.badgeStatus} ${
-                            item.status === 'Em Atendimento'
-                              ? styles.inProgress
-                              : item.status === 'Pendente'
-                              ? styles.pending
-                              : styles.done
-                          }`}
-                        >
-                          {item.status}
-                        </span>
-                      </td>
-                      <td>{item.dataAbertura}</td>
-                      <td>
-                        <button
-                          className={styles.actionBtn}
-                          onClick={() => navigate('/DetalhesChamado', { state: { protocolo: item.protocolo } })}
-                          title="Ver detalhes do chamado"
-                        >
-                          <i className="fa-solid fa-eye"></i> Detalhes
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                  chamadosFiltrados.map((item, idx) => {
+                    const idLimpo = (item.id || item.protocolo || '').replace('#', '');
+                    const protocoloExibido = item.protocolo || `#${item.id}`;
+
+                    return (
+                      <tr key={idx}>
+                        <td className={styles.codeCell}>{protocoloExibido}</td>
+                        <td><strong>{item.equipamento}</strong></td>
+                        <td>{item.categoria}</td>
+                        <td>{item.dataAbertura}</td>
+                        <td>
+                          <span className={`${styles.badgeStatus} ${getBadgeClass(item.status)}`}>
+                            {item.status}
+                          </span>
+                        </td>
+                        <td>
+                          <button
+                            className={styles.actionBtn}
+                            onClick={() =>
+                              navigate(`/DetalhesChamado/${idLimpo}`, {
+                                state: { protocolo: protocoloExibido, ticketId: idLimpo }
+                              })
+                            }
+                          >
+                            <i className="fa-solid fa-eye"></i> Ver Detalhes
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
-                    <td colSpan="8" className={styles.noResults}>
-                      <i className="fa-solid fa-folder-open"></i> Nenhum chamado encontrado com os filtros aplicados.
+                    <td colSpan="6" className={styles.noResults}>
+                      <i className="fa-solid fa-folder-open"></i> Nenhum chamado encontrado para o filtro selecionado.
                     </td>
                   </tr>
                 )}
@@ -270,6 +242,7 @@ const MeusChamados = () => {
             </table>
           </div>
         </section>
+
       </main>
     </div>
   );

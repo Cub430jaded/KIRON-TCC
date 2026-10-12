@@ -1,0 +1,133 @@
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #d4d4d4;
+  color: #333;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 50px 20px;
+}
+
+.termsContainer {
+  background: #ffffff;
+  padding: 50px 60px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 900px;
+  border-top: 5px solid #0066CC;
+  box-sizing: border-box;
+}
+
+.headerTitleArea {
+  text-align: center;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 30px;
+}
+
+.badge {
+  background-color: #e0f2fe;
+  color: #0066CC;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.headerTitleArea h1 {
+  font-size: 2.2rem;
+  color: #1a1a1a;
+  margin: 15px 0 5px 0;
+}
+
+.lastUpdate {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* Corpo do texto legal */
+.contentBody {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.termSection h2 {
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  border-left: 3px solid #0066CC;
+  padding-left: 10px;
+}
+
+.termSection p {
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.termSection ul {
+  margin: 10px 0 10px 20px;
+  padding: 0;
+}
+
+.termSection li {
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+/* Bloco de Contato Inferior */
+.contactSupport {
+  margin-top: 40px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 25px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.contactSupport p {
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.supportBtn {
+  background-color: #0066CC;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 30px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.supportBtn:hover {
+  background-color: #0052a3;
+  transform: translateY(-1px);
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+  .termsContainer {
+    padding: 30px 20px;
+  }
+  .headerTitleArea h1 {
+    font-size: 1.8rem;
+  }
+}

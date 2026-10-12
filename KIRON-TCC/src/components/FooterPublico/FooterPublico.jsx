@@ -44,8 +44,8 @@ const FooterPublico = () => {
       <div className={styles.footerBottom}>
         <p>&copy; {new Date().getFullYear()} Kiron TI. Todos os direitos reservados.</p>
         <div className={styles.legalLinks}>
-          <a href="#termos">Termos de Uso</a>
-          <a href="#privacidade">Política de Privacidade</a>
+          <li><Link to="/termosUso">Termos de Uso</Link></li>
+          <li><Link to="/politicaPrivacidade">Política de Privacidade</Link></li>
         </div>
       </div>
     </footer>

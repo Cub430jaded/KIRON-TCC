@@ -19,7 +19,7 @@
 /* O Cartão Central */
 .card {
   background: #ffffff;
-  padding: 30px 35px; /* Espaçamento interno um pouco mais compacto */
+  padding: 30px 35px;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   width: 100%;
@@ -51,7 +51,7 @@
 .subtitle {
   font-size: 0.9rem;
   color: #666;
-  margin-bottom: 20px; /* Reduzido o espaço após o subtítulo */
+  margin-bottom: 20px;
 }
 
 /* Formulário em Grid */
@@ -61,43 +61,64 @@
   text-align: left;
 }
 
-/* Organiza campos lado a lado em telas maiores */
 .rowGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px; /* Reduzido o espaço horizontal entre colunas */
+  gap: 12px;
 }
 
 .label-input {
   font-weight: 600;
   font-size: 0.85rem;
   color: #444;
-  margin-bottom: 4px; /* Reduzido o espaço entre a label e o input */
+  margin-bottom: 4px;
   display: block;
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px; /* Espaço menor entre um campo e outro (antes era 16px) */
+  margin-bottom: 10px;
 }
 
+/* Campos de Input ajustados com fundo branco e sem cor cinza de preenchimento */
 .input-field {
   width: 100%;
-  padding: 10px 12px; /* Padding interno um pouco mais compacto */
+  padding: 10px 12px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 0.95rem;
   outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
   box-sizing: border-box;
+  background-color: #3b3b3b !important; /* Cor de fundo fixa */
+  color: #ffffff !important; /* Texto sempre branco */
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.input-field:focus {
-  border-color: #0066CC;
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+/* Garante que ao clicar/focar o campo NÃO mude de cor de fundo */
+.input-field:focus,
+.input-field:active {
+  background-color: #3b3b3b !important;
+  color: #ffffff !important;
+  border-color: #0066CC !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15) !important;
 }
 
+/* Estiliza o texto cinza do placeholder (ex: "Seu nome completo") para ficar visível */
+.input-field::placeholder {
+  color: #e2e8f0 !important;
+  opacity: 1;
+}
+
+/* Impede que o navegador altere a cor no preenchimento automático */
+.input-field:-webkit-autofill,
+.input-field:-webkit-autofill:hover, 
+.input-field:-webkit-autofill:focus, 
+.input-field:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #3b3b3b inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
 /* Posicionamento relativo para segurar o ícone de interrogação flutuante */
 .inputWrapper {
   position: relative;
@@ -105,7 +126,6 @@
   align-items: center;
 }
 
-/* Deixa a bordinha do input vermelha quando há erro */
 .inputError {
   border-color: #dc2626 !important;
 }
@@ -114,7 +134,6 @@
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
 }
 
-/* O ícone do círculo vermelho com a interrogação */
 .errorIcon {
   position: absolute;
   right: 12px;
@@ -134,7 +153,6 @@
   box-shadow: 0 2px 5px rgba(220, 38, 38, 0.3);
 }
 
-/* O balão pop-up (Tooltip) que aparece ao passar o mouse */
 .tooltipBox {
   visibility: hidden;
   position: absolute;
@@ -153,7 +171,6 @@
   transition: opacity 0.3s ease;
 }
 
-/* Seta apontando para baixo no balão */
 .tooltipBox::after {
   content: "";
   position: absolute;
@@ -161,16 +178,14 @@
   right: 15px;
   border-width: 5px;
   border-style: solid;
-  border-color: #1f2937 transparent transparent transparent;
+  border-color: #000000 transparent transparent transparent;
 }
 
-/* Faz o pop-up aparecer quando o usuário passa o mouse por cima da interrogação */
 .errorIcon:hover + .tooltipBox {
   visibility: visible;
   opacity: 1;
 }
 
-/* Caixa de aviso específica para a senha */
 .tooltipContainerPassword {
   position: relative;
   display: flex;
@@ -233,7 +248,7 @@
 
 .cancel-btn {
   background-color: transparent;
-  color: #666;
+  color: #667;
   border: 1px solid #d1d5db;
   border-radius: 6px;
   padding: 10px;
@@ -248,7 +263,6 @@
   color: #333;
 }
 
-/* Links Adicionais no Rodapé do Card */
 .footerLinks {
   margin-top: 15px;
   font-size: 0.9rem;
@@ -268,11 +282,42 @@
   text-decoration: underline;
 }
 
-/* Rodapé Geral da Página */
 .footer {
   text-align: center;
   padding: 20px;
   background-color: #1a1a1a;
   color: #9ca3af;
   font-size: 0.85rem;
+}
+
+/* Container relativo para posicionar o ícone em cima do input de senha */
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Espaço extra à direita para o texto da senha não sobrepor o ícone */
+.passwordWrapper .input-field {
+  padding-right: 40px;
+}
+
+/* Botão do olho */
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #a1a1a1;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.eyeBtn:hover {
+  color: #ffffff;
 }

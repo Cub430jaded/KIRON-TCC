@@ -4,83 +4,102 @@ import styles from './LoginUsuario.module.css';
 
 const LoginUsuario = () => {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [mostrarSenha, setMostrarSenha] = useState(false); // Estado para controlar a visibilidade da senha
 
   const handleLogin = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!email.trim() || !senha.trim()) {
-      alert('Por favor, preencha todos os campos.');
-      return;
-    }
-
-    // Registra a sessão no navegador simulando o login bem-sucedido
-    localStorage.setItem('kiron_usuario_logado', 'true');
-
-    // Redireciona imediatamente para a página principal sem exibir alertas
-    navigate('/'); 
+  // Simulação de verificação de login
+  const usuarioAutenticado = {
+    nome: 'Bruno Silva Almeida',
+    email: emailInput, // ou e-mail digitado no login
+    telefone: '(11) 98765-4321',
+    cargo: 'Gestor de TI / Operações',
+    empresa: 'Sua Empresa S.A.'
   };
+
+  // Define sessão como ativa e grava os dados do usuário
+  localStorage.setItem('kiron_usuario_logado', 'true');
+  localStorage.setItem('kiron_usuario_logado_dados', JSON.stringify(usuarioAutenticado));
+
+  navigate('/HomeCliente');
+};
 
   return (
     <div className={styles.pageWrapper}>
       <div className={styles['container-fundo']}>
-        <div className={styles['card']}>
-          <div className={styles.logoArea}>
+        <div className={styles.card}>
+          <div className={styles.logoArea} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
             <span className={styles.logoKiron}>Kiron</span>
             <span className={styles.logoTi}>TI</span>
           </div>
-          <h1>Acessar Sistema</h1>
-          <p className={styles.subtitle}>Entre com suas credenciais para continuar</p>
+          <h1>Entrar na Kiron TI</h1>
+          <p className={styles.subtitle}>Acesse o seu painel de gerenciamento</p>
 
-          <form className={styles['form-grid']} onSubmit={handleLogin}>
-            
+          <form onSubmit={handleLogin} className={styles['form-grid']}>
             <div className={styles.inputGroup}>
-              <label className={styles['label-input']} htmlFor="email">E-mail Corporativo ou CNPJ:</label>
+              <label className={styles['label-input']}>E-mail ou CNPJ</label>
               <input 
-                className={styles['input-field']} 
                 type="text" 
-                id="email" 
-                name="email" 
-                placeholder="seu.email@empresa.com" 
+                className={styles['input-field']} 
+                placeholder="seu@email.com ou CNPJ"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required 
+                required
               />
             </div>
 
             <div className={styles.inputGroup}>
-              <label className={styles['label-input']} htmlFor="senha">Senha:</label>
-              <input 
-                className={styles['input-field']} 
-                type="password" 
-                id="senha" 
-                name="senha" 
-                placeholder="••••••••" 
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                required 
-              />
+              <label className={styles['label-input']}>Senha</label>
+              {/* Container para alinhar o input e o ícone de olho lado a lado */}
+              <div className={styles.passwordWrapper}>
+                <input 
+                  type={mostrarSenha ? "text" : "password"} 
+                  className={styles['input-field']} 
+                  placeholder="Sua senha"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  required
+                />
+                <button 
+                  type="button" 
+                  className={styles.eyeBtn}
+                  onClick={() => setMostrarSenha(!mostrarSenha)}
+                  title={mostrarSenha ? "Ocultar senha" : "Ver senha"}
+                >
+                  {mostrarSenha ? (
+                    <i className="fa-solid fa-eye-slash"></i>
+                  ) : (
+                    <i className="fa-solid fa-eye"></i>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div style={{ textAlign: 'right', marginBottom: '15px' }}>
+              <span className={styles.linkForgotPassword} onClick={() => navigate('/recuperar-senha')}>
+                Esqueceu a senha?
+              </span>
             </div>
 
             <div className={styles.actions}>
-              <button className={styles['submit-btn']} type="submit">Entrar</button>
-              <button className={styles['cancel-btn']} type="button" onClick={() => navigate('/')}>
-                Voltar ao Início
+              <button type="submit" className={styles['submit-btn']}>Entrar</button>
+              <button 
+                type="button" 
+                className={styles['cancel-btn']} 
+                onClick={() => navigate('/')}
+              >
+                Voltar
               </button>
             </div>
           </form>
 
           <div className={styles.footerLinks}>
-            <span onClick={() => navigate('/cadastro')} className={styles.linkRegister}>
-              Ainda não tem uma conta? <strong>Cadastre sua empresa</strong>
+            <span className={styles.linkRegister} onClick={() => navigate('/cadastro')}>
+              Não tem uma conta? <strong>Cadastre-se</strong>
             </span>
-           <div style={{ marginTop: '8px' }}>
-           <span onClick={() => navigate('/recuperar-senha')} className={styles.linkForgotPassword}>
-           <strong>Esqueceu a senha?</strong>
-            </span>
-            </div>
           </div>
         </div>
       </div>

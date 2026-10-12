@@ -23,8 +23,8 @@
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 450px; /* Um pouco mais estreito que o cadastro, ideal para login */
-  border-top: 5px solid #0066CC; /* Cor da marca Kiron TI */
+  max-width: 450px;
+  border-top: 5px solid #0066CC;
   text-align: center;
 }
 
@@ -75,6 +75,7 @@
   margin-bottom: 12px;
 }
 
+/* Campos de Input estilizados */
 .input-field {
   width: 100%;
   padding: 10px 12px;
@@ -82,13 +83,35 @@
   border-radius: 6px;
   font-size: 0.95rem;
   outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
   box-sizing: border-box;
+  background-color: #3b3b3b !important; /* Cor base solicitada */
+  color: #ffffff !important; /* Texto sempre branco */
 }
 
-.input-field:focus {
+/* Quando focado ou ativo, muda para a cor com opacidade */
+.input-field:focus,
+.input-field:active {
+  background-color: #3b3b3b !important; /* Cor solicitada para quando preenchido/focado */
+  color: #ffffff !important;
   border-color: #0066CC;
   box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+}
+
+/* Estiliza o placeholder para garantir legibilidade no fundo escuro */
+.input-field::placeholder {
+  color: #a1a1a1 !important;
+  opacity: 1;
+}
+
+/* Impede que o navegador altere a cor no preenchimento automático */
+.input-field:-webkit-autofill,
+.input-field:-webkit-autofill:hover, 
+.input-field:-webkit-autofill:focus, 
+.input-field:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #3b3b3b inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Botões de Ação */
@@ -172,4 +195,36 @@
   background-color: #1a1a1a;
   color: #9ca3af;
   font-size: 0.85rem;
+}
+
+/* Container relativo para posicionar o ícone em cima do input de senha */
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Garante que o input de senha tenha espaço à direita para o ícone não tampar o texto */
+.passwordWrapper .input-field {
+  padding-right: 40px; 
+}
+
+/* Estilo do botão do olho */
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #a1a1a1;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.eyeBtn:hover {
+  color: #ffffff;
 }

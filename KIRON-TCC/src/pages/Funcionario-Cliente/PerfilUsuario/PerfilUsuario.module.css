@@ -1,0 +1,417 @@
+/* ESTRUTURA GERAL (FUNDO #d4d4d4 FIXO E UNIFICADO) */
+.pageWrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #d4d4d4 !important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1a1a1a;
+}
+
+/* SIDEBAR LATERAL */
+.sidebar {
+  width: 250px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 25px 15px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.logoArea {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 35px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.logoKiron { color: #0066CC; }
+.logoTi { color: #ffffff; }
+
+.navMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  padding: 12px 15px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.navItem:hover {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+.navItem.active {
+  background-color: #0066CC;
+  color: #ffffff;
+}
+
+.sidebarFooter {
+  border-top: 1px solid #333333;
+  padding-top: 15px;
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  padding: 10px;
+}
+
+.logoutBtn:hover {
+  color: #f87171;
+}
+
+/* CONTEÚDO PRINCIPAL RESPONSIVO */
+.mainContent {
+  flex: 1;
+  padding: 30px;
+  box-sizing: border-box;
+  background-color: #d4d4d4 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+  min-width: 0;
+}
+
+.headerBlock {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 20px 25px;
+  border-radius: 8px;
+  border: 2px solid #b0b0b0;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.headerBlock h1 {
+  margin: 0 0 5px 0;
+  font-size: 1.6rem;
+  color: #1a1a1a;
+}
+
+.welcomeText {
+  margin: 0;
+  color: #555555;
+  font-size: 0.95rem;
+}
+
+.btnVoltar {
+  background-color: #f3f4f6;
+  color: #333333;
+  border: 1px solid #b0b0b0;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btnVoltar:hover {
+  background-color: #e5e7eb;
+}
+
+/* MENSAGENS DE FEEDBACK */
+.alertSuccess {
+  background-color: #dcfce7;
+  color: #15803d;
+  padding: 12px 18px;
+  border-radius: 6px;
+  border: 1px solid #bbf7d0;
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alertDanger {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 12px 18px;
+  border-radius: 6px;
+  border: 1px solid #fca5a5;
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* SEÇÃO PLANILHA EXECUTIVA */
+.sheetSection {
+  background-color: #ffffff;
+  border: 2px solid #b0b0b0;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.profileSummaryHeader {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatarCircle {
+  width: 70px;
+  height: 70px;
+  background-color: #0066CC;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.profileInfo h2 {
+  margin: 0 0 4px 0;
+  font-size: 1.4rem;
+  color: #1a1a1a;
+}
+
+.profileInfo p {
+  margin: 0 0 8px 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.sectionHeader {
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 1.15rem;
+  color: #1a1a1a;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* FORMULÁRIOS */
+.formSheet {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.inputGroup, .inputGroupFull {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.label i {
+  color: #0066CC;
+}
+
+.inputField {
+  padding: 10px 12px;
+  border: 1px solid #b0b0b0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f9fafb;
+  color: #1a1a1a;
+  outline: none;
+  transition: all 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.inputField:focus {
+  border-color: #0066CC;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+  background-color: #ffffff;
+}
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.togglePassBtn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 5px;
+}
+
+.togglePassBtn:hover {
+  color: #0066CC;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 15px;
+}
+
+.btnSubmit {
+  background-color: #0066CC;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 11px 22px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.btnSubmit:hover {
+  background-color: #0052a3;
+}
+
+/* TABELA DE DADOS DA EMPRESA */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.sheetTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.sheetTable th {
+  background-color: #2b2b2b;
+  color: #ffffff;
+  padding: 10px 15px;
+  font-weight: 600;
+  border: 1px solid #1a1a1a;
+  white-space: nowrap;
+}
+
+.sheetTable td {
+  padding: 12px 15px;
+  border: 1px solid #d1d5db;
+  color: #333333;
+  background-color: #ffffff;
+}
+
+.sheetTable tbody tr:nth-child(even) td {
+  background-color: #f9fafb;
+}
+
+.codeCell {
+  font-family: monospace;
+  font-weight: bold;
+  color: #0066CC;
+}
+
+.badgeSuccess {
+  background-color: #dcfce7;
+  color: #15803d;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  border: 1px solid #bbf7d0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* MEDIA QUERIES PARA MOBILE E TABLET */
+@media (max-width: 900px) {
+  .pageWrapper {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .logoArea {
+    margin-bottom: 15px;
+  }
+
+  .navMenu {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 5px;
+  }
+
+  .navItem {
+    white-space: nowrap;
+    padding: 8px 12px;
+  }
+
+  .sidebarFooter {
+    display: none;
+  }
+
+  .mainContent {
+    padding: 15px;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+}

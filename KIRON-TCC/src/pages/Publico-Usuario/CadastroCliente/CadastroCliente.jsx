@@ -16,6 +16,9 @@ const CadastroCliente = () => {
   const [erroNome, setErroNome] = useState('');
   const [erroSenha, setErroSenha] = useState('');
 
+  // Estado para controlar a visibilidade da senha em ambos os campos
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+
   const aplicarMascaraCnpj = (valor) => {
     return valor
       .replace(/\D/g, '')
@@ -70,9 +73,23 @@ const CadastroCliente = () => {
       return;
     }
 
-    // Registra o usuário como logado automaticamente após o cadastro sem exibir alertas
+    // Estrutura do objeto de usuário cadastrado
+    const novoUsuario = {
+      nome: nome.trim(),
+      email: email.trim(),
+      telefone: telefone,
+      cargo: 'Responsável Técnico / Operações',
+      empresa: razaoSocial.trim() || 'Sua Empresa S.A.',
+      cnpj: cnpj
+    };
+
+    // Salva os dados do usuário e ativa a sessão no localStorage
     localStorage.setItem('kiron_usuario_logado', 'true');
-    navigate('/'); 
+    localStorage.setItem('kiron_usuario_logado_dados', JSON.stringify(novoUsuario));
+    localStorage.setItem('kiron_senha_usuario', senha);
+
+    // Redireciona diretamente para o Dashboard do Cliente
+    navigate('/HomeCliente');
   };
 
   return (
@@ -172,36 +189,70 @@ const CadastroCliente = () => {
               />
             </div>
 
-            {/* Senhas e Pop-up de Erro da Senha */}
+            {/* Senhas e Pop-up de Erro da Senha com Botões de Olho */}
             <div className={styles.inputGroup}>
               <div className={styles.rowGrid}>
+                
+                {/* Campo Senha */}
                 <div>
                   <label className={styles['label-input']} htmlFor="senha">Senha:</label>
-                  <input 
-                    className={`${styles['input-field']} ${erroSenha ? styles.inputError : ''}`} 
-                    type="password" 
-                    id="senha" 
-                    name="senha" 
-                    placeholder="••••••••" 
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                    required 
-                  />
+                  <div className={styles.passwordWrapper}>
+                    <input 
+                      className={`${styles['input-field']} ${erroSenha ? styles.inputError : ''}`} 
+                      type={mostrarSenha ? "text" : "password"} 
+                      id="senha" 
+                      name="senha" 
+                      placeholder="••••••••" 
+                      value={senha}
+                      onChange={(e) => setSenha(e.target.value)}
+                      required 
+                    />
+                    <button
+                      type="button"
+                      className={styles.eyeBtn}
+                      onClick={() => setMostrarSenha(!mostrarSenha)}
+                      title={mostrarSenha ? "Ocultar senha" : "Ver senha"}
+                    >
+                      {mostrarSenha ? (
+                        <i className="fa-solid fa-eye-slash"></i>
+                      ) : (
+                        <i className="fa-solid fa-eye"></i>
+                      )}
+                    </button>
+                  </div>
                 </div>
+
+                {/* Campo Confirmar Senha */}
                 <div>
                   <label className={styles['label-input']} htmlFor="confirmar-senha">Confirmar Senha:</label>
-                  <input 
-                    className={`${styles['input-field']} ${erroSenha ? styles.inputError : ''}`} 
-                    type="password" 
-                    id="confirmar-senha" 
-                    name="confirmar-senha" 
-                    placeholder="••••••••" 
-                    value={confirmarSenha}
-                    onChange={(e) => setConfirmarSenha(e.target.value)}
-                    required 
-                  />
+                  <div className={styles.passwordWrapper}>
+                    <input 
+                      className={`${styles['input-field']} ${erroSenha ? styles.inputError : ''}`} 
+                      type={mostrarSenha ? "text" : "password"} 
+                      id="confirmar-senha" 
+                      name="confirmar-senha" 
+                      placeholder="••••••••" 
+                      value={confirmarSenha}
+                      onChange={(e) => setConfirmarSenha(e.target.value)}
+                      required 
+                    />
+                    <button
+                      type="button"
+                      className={styles.eyeBtn}
+                      onClick={() => setMostrarSenha(!mostrarSenha)}
+                      title={mostrarSenha ? "Ocultar senha" : "Ver senha"}
+                    >
+                      {mostrarSenha ? (
+                        <i className="fa-solid fa-eye-slash"></i>
+                      ) : (
+                        <i className="fa-solid fa-eye"></i>
+                      )}
+                    </button>
+                  </div>
                 </div>
+
               </div>
+
               {erroSenha && (
                 <div className={styles.tooltipContainerPassword}>
                   <span className={styles.errorIcon}>?</span>

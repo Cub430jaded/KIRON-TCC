@@ -28,6 +28,16 @@ const HomeInstitucional = () => {
     setSlideAtual((prev) => (prev === 0 ? imagensCarrossel.length - 1 : prev - 1));
   };
 
+  const handleComecarAgora = () => {
+    const usuarioLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
+
+    if (usuarioLogado) {
+      navigate('/planos'); // Se já estiver logado, vai direto para os Planos
+    } else {
+      navigate('/cadastro'); // Se não estiver logado, vai para o Cadastro
+    }
+  };
+
   return (
     <div className={styles.pageWrapper}>
       <HeaderPublico />
@@ -72,13 +82,15 @@ const HomeInstitucional = () => {
 
           <div className={styles.badge}>SaaS de Suporte de TI</div>
           <h1 className={styles.heroTitle}>
-            Tecnologia não é custo, é o <span className={styles.highlight}>motor do seu negócio.</span>
+            Tecnologia não é custo, é o 
+            <p></p>
+            <span className={styles.highlight}>motor do seu negócio.</span>
           </h1>
           <p className={styles.heroSubtitle}>
             Terceirize sua TI com a Kiron. Suporte ágil, monitoramento preventivo e soluções que cabem no bolso da sua pequena empresa.
           </p>
           <div className={styles.actionArea}>
-            <button className={styles.ctaButton} onClick={() => navigate('/cadastro')}>
+            <button className={styles.ctaButton} onClick={handleComecarAgora}>
               Começar Agora
             </button>
             <p className={styles.subText}>Planos a partir de R$ 99/mês. Cancele quando quiser.</p>
@@ -88,10 +100,10 @@ const HomeInstitucional = () => {
         <section className={styles.features}>
           <div className={styles.card}>
             <div className={styles.iconPlaceholder}>
-              <i className="fa-brands fa-whatsapp"></i>
+              <i className="fa-solid fa-headset"></i>
             </div>
-            <h3>Suporte via WhatsApp</h3>
-            <p>Esqueça os tickets burocráticos. Fale com um especialista direto no chat e resolva problemas em minutos.</p>
+            <h3>Atendimento Ágil</h3>
+            <p>Abertura de chamados simplificada e resolução garantida com SLA prioritário para sua empresa.</p>
           </div>
           <div className={styles.card}>
             <div className={styles.iconPlaceholder}>

@@ -1,46 +1,43 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 import styles from './PerfilUsuario.module.css';
 
 const PerfilUsuario = () => {
   const navigate = useNavigate();
 
-  // Dados Pessoais (Modo Leitura)
   const [dadosUsuario, setDadosUsuario] = useState({
-    nome: 'Bruno Silva Almeida',
-    email: 'bruno.silva@empresa.com.br',
-    cpf: '123.456.789-00',
-    cargo: 'Gestor de TI',
-    setor: 'Operações e Infraestrutura'
+    nome: '',
+    email: '',
+    cpf: '',
+    cargo: '',
+    setor: ''
   });
 
-  // Estados para Alteração de Senha
   const [senhaAtual, setSenhaAtual] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  // Feedbacks
   const [mensagemSucesso, setMensagemSucesso] = useState('');
   const [mensagemErro, setMensagemErro] = useState('');
+  const [salvando, setSalvando] = useState(false);
 
   useEffect(() => {
-    // Validação da Sessão
     const estaLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
     if (!estaLogado) {
-      navigate('/Login');
+      navigate('/login');
       return;
     }
 
-    // Carrega os dados reais do utilizador salvos na sessão do Login/Cadastro
     const usuarioSalvo = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
     if (usuarioSalvo) {
       setDadosUsuario({
-        nome: usuarioSalvo.nome || 'Bruno Silva Almeida',
-        email: usuarioSalvo.email || 'bruno.silva@empresa.com.br',
-        cpf: usuarioSalvo.cpf || '123.456.789-00',
-        cargo: usuarioSalvo.cargo || 'Gestor de TI',
-        setor: usuarioSalvo.setor || usuarioSalvo.empresa || 'Setor de Operações'
+        nome: usuarioSalvo.nome || 'Usuário Kiron',
+        email: usuarioSalvo.email || 'usuario@empresa.com.br',
+        cpf: usuarioSalvo.cpf || 'Não informado',
+        cargo: usuarioSalvo.cargo || 'Funcionário',
+        setor: usuarioSalvo.setor || 'Operações'
       });
     }
   }, [navigate]);
@@ -48,10 +45,10 @@ const PerfilUsuario = () => {
   const handleLogout = () => {
     localStorage.removeItem('kiron_usuario_logado');
     localStorage.removeItem('kiron_usuario_logado_dados');
-    navigate('/Login');
+    navigate('/login');
   };
 
-  const handleAlterarSenha = (e) => {
+  const handleAlterarSenha = async (e) => {
     e.preventDefault();
     setMensagemErro('');
     setMensagemSucesso('');
@@ -71,22 +68,29 @@ const PerfilUsuario = () => {
       return;
     }
 
-    // Grava a nova senha
-    localStorage.setItem('kiron_senha_usuario', novaSenha);
+    try {
+      setSalvando(true);
+      const res = await api.put('/auth/alterar-senha', {
+        email: dadosUsuario.email,
+        senhaAtual,
+        novaSenha
+      });
 
-    setMensagemSucesso('Senha alterada com sucesso!');
-    setSenhaAtual('');
-    setNovaSenha('');
-    setConfirmarSenha('');
-
-    setTimeout(() => {
-      setMensagemSucesso('');
-    }, 4000);
+      setMensagemSucesso(res.data || 'Senha alterada com sucesso!');
+      setSenhaAtual('');
+      setNovaSenha('');
+      setConfirmarSenha('');
+    } catch (err) {
+      console.error('Erro ao alterar senha:', err);
+      const msg = err.response?.data || 'Erro ao alterar a senha.';
+      setMensagemErro(msg);
+    } finally {
+      setSalvando(false);
+    }
   };
 
   return (
     <div className={styles.pageWrapper}>
-      {/* SIDEBAR FIXA */}
       <aside className={styles.sidebar}>
         <div className={styles.logoArea} onClick={() => navigate('/HomeCliente')}>
           <span className={styles.logoKiron}>Kiron</span>
@@ -115,10 +119,7 @@ const PerfilUsuario = () => {
         </div>
       </aside>
 
-      {/* CONTEÚDO PRINCIPAL */}
       <main className={styles.mainContent}>
-        
-        {/* CABEÇALHO */}
         <header className={styles.headerBlock}>
           <div>
             <h1>Perfil do Usuário</h1>
@@ -129,7 +130,6 @@ const PerfilUsuario = () => {
           </button>
         </header>
 
-        {/* FEEDBACKS (ALERTAS VISUAIS) */}
         {mensagemSucesso && (
           <div className={styles.alertSuccess}>
             <i className="fa-solid fa-circle-check"></i> {mensagemSucesso}
@@ -142,7 +142,6 @@ const PerfilUsuario = () => {
           </div>
         )}
 
-        {/* PAINEL 1: DADOS PESSOAIS (APENAS LEITURA - REQUISITO TCC) */}
         <section className={styles.sheetSection}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
@@ -165,7 +164,7 @@ const PerfilUsuario = () => {
             </div>
 
             <div className={styles.inputGroup}>
-              <label className={styles.label}><i className="fa-solid fa-address-card"></i> CPF:</label>
+              <label className={styles.label}><i className="fa-solid fa-address-card"></i> CPF / CNPJ:</label>
               <input type="text" className={styles.readOnlyInput} value={dadosUsuario.cpf} readOnly />
             </div>
 
@@ -175,13 +174,12 @@ const PerfilUsuario = () => {
             </div>
 
             <div className={styles.inputGroupFull}>
-              <label className={styles.label}><i className="fa-solid fa-building"></i> Setor / Unidade:</label>
+              <label className={styles.label}><i className="fa-solid fa-building"></i> Setor / Empresa:</label>
               <input type="text" className={styles.readOnlyInput} value={dadosUsuario.setor} readOnly />
             </div>
           </div>
         </section>
 
-        {/* PAINEL 2: ALTERAÇÃO DE SENHA */}
         <section className={styles.sheetSection}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
@@ -190,8 +188,6 @@ const PerfilUsuario = () => {
           </div>
 
           <form onSubmit={handleAlterarSenha} className={styles.formSheet}>
-            
-            {/* SENHA ATUAL */}
             <div className={styles.inputGroupFull}>
               <label className={styles.label} htmlFor="senhaAtual">
                 <i className="fa-solid fa-lock"></i> Senha Atual:
@@ -217,7 +213,6 @@ const PerfilUsuario = () => {
               </div>
             </div>
 
-            {/* NOVA SENHA & CONFIRMAÇÃO */}
             <div className={styles.formRow}>
               <div className={styles.inputGroup}>
                 <label className={styles.label} htmlFor="novaSenha">
@@ -251,14 +246,12 @@ const PerfilUsuario = () => {
             </div>
 
             <div className={styles.formActions}>
-              <button type="submit" className={styles.btnSubmit}>
-                <i className="fa-solid fa-floppy-disk"></i> Salvar Nova Senha
+              <button type="submit" className={styles.btnSubmit} disabled={salvando}>
+                <i className="fa-solid fa-floppy-disk"></i> {salvando ? 'Salvando...' : 'Salvar Nova Senha'}
               </button>
             </div>
-
           </form>
         </section>
-
       </main>
     </div>
   );

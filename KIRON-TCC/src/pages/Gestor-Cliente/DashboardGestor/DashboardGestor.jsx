@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModalDetalhesChamado from '../../../components/ModalDetalhesChamado/ModalDetalhesChamado';
+import api from '../../services/api';
 import styles from './DashboardGestor.module.css';
 
 const DashboardGestor = () => {
@@ -9,17 +10,69 @@ const DashboardGestor = () => {
   const [modalAberto, setModalAberto] = useState(false);
   const [chamadoSelecionado, setChamadoSelecionado] = useState(null);
 
-  const kpis = {
-    chamadosAbertos: 3,
-    equipamentosAtivos: 12,
-    faturaAtual: 'R$ 599,00'
-  };
+  // Estados dinâmicos do Dashboard
+  const [usuarioNome, setUsuarioNome] = useState('Gestor');
+  const [kpis, setKpis] = useState({
+    chamadosAbertos: 0,
+    equipamentosAtivos: 0
+  });
 
-  const ultimosChamados = [
-    { id: '1042', equipamento: 'PC Recepção', prioridade: 'Alta', status: 'Em Andamento', descricao: 'Máquina não liga, tela preta e apitando.' },
-    { id: '1041', equipamento: 'Notebook Financeiro', prioridade: 'Média', status: 'Aberto', descricao: 'Sistema de notas fiscais muito lento.' },
-    { id: '1039', equipamento: 'Servidor Local', prioridade: 'Baixa', status: 'Concluído', descricao: 'Criação de nova pasta na rede para o RH.' },
-  ];
+  const [ultimosChamados, setUltimosChamados] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+
+  useEffect(() => {
+    const estaLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
+    if (!estaLogado) {
+      navigate('/login');
+      return;
+    }
+
+    // Lê os dados do gestor logado
+    const dadosSalvos = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+    if (dadosSalvos && dadosSalvos.nome) {
+      setUsuarioNome(dadosSalvos.nome);
+    }
+
+    // Carrega estatísticas reais de Chamados e Equipamentos via Axios
+    const carregarDadosDashboard = async () => {
+      try {
+        setCarregando(true);
+        const [resChamados, resEquipamentos] = await Promise.all([
+          api.get('/chamados'),
+          api.get('/equipamentos')
+        ]);
+
+        const listaChamados = resChamados.data;
+        const listaEquipamentos = resEquipamentos.data;
+
+        // Filtra chamados não concluídos
+        const ativos = listaChamados.filter((c) => {
+          const st = (c.status || '').toLowerCase();
+          return !st.includes('concluído') && !st.includes('finalizado');
+        }).length;
+
+        setKpis({
+          chamadosAbertos: ativos,
+          equipamentosAtivos: listaEquipamentos.length
+        });
+
+        // Pega os 5 chamados mais recentes
+        setUltimosChamados(listaChamados.slice(0, 5));
+      } catch (err) {
+        console.error('Erro ao carregar dashboard:', err);
+      } finally {
+        setCarregando(false);
+      }
+    };
+
+    carregarDadosDashboard();
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('kiron_usuario_logado');
+    localStorage.removeItem('kiron_usuario_logado_dados');
+    navigate('/login');
+  };
 
   const abrirDetalhes = (chamado) => {
     setChamadoSelecionado(chamado);
@@ -50,7 +103,7 @@ const DashboardGestor = () => {
           </button>
         </nav>
         <div className={styles.sidebarFooter}>
-          <button className={styles.logoutBtn} onClick={() => navigate('/')}>
+          <button className={styles.logoutBtn} onClick={handleLogout}>
             <i className="fa-solid fa-arrow-right-from-bracket"></i> Sair
           </button>
         </div>
@@ -60,7 +113,7 @@ const DashboardGestor = () => {
         <header className={styles.topHeader}>
           <h1>Visão Geral da TI</h1>
           <div className={styles.userInfo}>
-            <span className={styles.userName}>Felipe Silva</span>
+            <span className={styles.userName}>{usuarioNome}</span>
             <div className={styles.avatar}><i className="fa-solid fa-user"></i></div>
           </div>
         </header>
@@ -98,27 +151,41 @@ const DashboardGestor = () => {
                 </tr>
               </thead>
               <tbody>
-                {ultimosChamados.map((chamado) => (
-                  <tr key={chamado.id} className={styles.tableRow}>
-                    <td>#{chamado.id}</td>
-                    <td>{chamado.equipamento}</td>
-                    <td>
-                      <span className={`${styles.badge} ${styles['prioridade' + chamado.prioridade]}`}>
-                        {chamado.prioridade}
-                      </span>
-                    </td>
-                    <td>{chamado.status}</td>
-                    <td>
-                      <button 
-                        className={styles.btnAction} 
-                        onClick={() => abrirDetalhes(chamado)}
-                        title="Ver Detalhes"
-                      >
-                        <i className="fa-solid fa-eye"></i>
-                      </button>
+                {carregando ? (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
+                      Carregando últimos chamados do banco...
                     </td>
                   </tr>
-                ))}
+                ) : ultimosChamados.length > 0 ? (
+                  ultimosChamados.map((chamado) => (
+                    <tr key={chamado.id} className={styles.tableRow}>
+                      <td>#KR-{chamado.id}</td>
+                      <td>{chamado.equipamento ? chamado.equipamento.nome : 'N/A'}</td>
+                      <td>
+                        <span className={`${styles.badge} ${styles['prioridade' + (chamado.prioridade || 'Media')]}`}>
+                          {chamado.prioridade || 'Média'}
+                        </span>
+                      </td>
+                      <td>{chamado.status}</td>
+                      <td>
+                        <button 
+                          className={styles.btnAction} 
+                          onClick={() => abrirDetalhes(chamado)}
+                          title="Ver Detalhes"
+                        >
+                          <i className="fa-solid fa-eye"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
+                      Nenhum chamado registrado no banco.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

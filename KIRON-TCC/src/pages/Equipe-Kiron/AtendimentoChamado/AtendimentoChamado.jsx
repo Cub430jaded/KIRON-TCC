@@ -1,35 +1,88 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import api from '../../services/api';
 import styles from './AtendimentoChamado.module.css';
 
 const AtendimentoChamado = () => {
   const navigate = useNavigate();
-  
-  // Dados simulados do chamado que está sendo atendido
-  const chamadoAtual = {
-    id: '1045',
-    cliente: 'TechCorp',
-    equipamento: 'Notebook Diretor',
-    descricao: 'Notebook extremamente lento, travando ao abrir o Excel. Necessário verificar HD/SSD e fazer backup urgente.',
-    prioridade: 'Alta',
-    dataAbertura: '09/10/2026 14:20'
-  };
+  const { id } = useParams();
+
+  const [chamadoAtual, setChamadoAtual] = useState(null);
+  const [carregando, setCarregando] = useState(true);
 
   const [form, setForm] = useState({
     status: 'Em Andamento',
     parecer: ''
   });
 
-  const handleFinalizar = (e) => {
+  const [tecnico, setTecnico] = useState({
+    nome: 'Técnico',
+    cargo: 'Suporte Nível 2'
+  });
+
+  useEffect(() => {
+    const estaLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
+    if (!estaLogado) {
+      navigate('/login');
+      return;
+    }
+
+    const dadosUsuario = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+    if (dadosUsuario) {
+      setTecnico({
+        nome: dadosUsuario.nome || 'Técnico de Suporte',
+        cargo: dadosUsuario.cargo || 'Equipe Kiron TI'
+      });
+    }
+
+    const buscarChamado = async () => {
+      try {
+        setCarregando(true);
+        const res = await api.get(`/chamados/${id}`);
+        setChamadoAtual(res.data);
+        setForm({
+          status: res.data.status || 'Em Andamento',
+          parecer: res.data.parecerTecnico || ''
+        });
+      } catch (err) {
+        console.error('Erro ao buscar chamado:', err);
+        alert('Chamado não encontrado.');
+        navigate('/FilaTecnico');
+      } finally {
+        setCarregando(false);
+      }
+    };
+
+    if (id) buscarChamado();
+  }, [id, navigate]);
+
+  const handleFinalizar = async (e) => {
     e.preventDefault();
+
     if (form.status === 'Concluído' && form.parecer.trim() === '') {
       alert("Erro (RN004): O Parecer Técnico é obrigatório para concluir um chamado.");
       return;
     }
-    
-    alert(`Chamado #${chamadoAtual.id} atualizado com sucesso para o status: ${form.status}!`);
-    navigate('/fila-tecnico');
+
+    try {
+      await api.put(`/chamados/${id}/status`, {
+        status: form.status,
+        parecerTecnico: form.parecer
+      });
+
+      alert(`Chamado #KR-${id} atualizado com sucesso no banco de dados!`);
+      navigate('/FilaTecnico');
+    } catch (err) {
+      console.error('Erro ao atualizar chamado:', err);
+      alert('Erro ao atualizar o chamado no servidor.');
+    }
   };
+
+  if (carregando) {
+    return <div style={{ padding: '40px', color: '#fff' }}>Carregando dados do chamado...</div>;
+  }
+
+  if (!chamadoAtual) return null;
 
   return (
     <div className={styles.pageContainer}>
@@ -40,12 +93,12 @@ const AtendimentoChamado = () => {
         <div className={styles.techProfile}>
           <div className={styles.avatar}><i className="fa-solid fa-headset"></i></div>
           <div>
-            <p className={styles.techName}>Felipe Silva</p>
-            <p className={styles.techRole}>Técnico Nível 2</p>
+            <p className={styles.techName}>{tecnico.nome}</p>
+            <p className={styles.techRole}>{tecnico.cargo}</p>
           </div>
         </div>
         <nav className={styles.sidebarNav}>
-          <button className={styles.activeMenu} onClick={() => navigate('/filaTecnico')}>
+          <button className={styles.activeMenu} onClick={() => navigate('/FilaTecnico')}>
             <i className="fa-solid fa-arrow-left"></i> Voltar para Fila
           </button>
         </nav>
@@ -53,37 +106,34 @@ const AtendimentoChamado = () => {
 
       <main className={styles.mainContent}>
         <header className={styles.topHeader}>
-          <h1>Resolvendo Chamado #{chamadoAtual.id}</h1>
-          <span className={styles.badgeAlta}>Prioridade {chamadoAtual.prioridade}</span>
+          <h1>Resolvendo Chamado #KR-{chamadoAtual.id}</h1>
+          <span className={styles.badgeAlta}>Prioridade {chamadoAtual.prioridade || 'Média'}</span>
         </header>
 
         <div className={styles.workspaceGrid}>
-          {/* Coluna Esquerda: Dados do Chamado (Apenas Leitura) */}
           <section className={styles.infoSection}>
             <h2>Informações do Ticket</h2>
             <div className={styles.infoBlock}>
-              <label>Cliente</label>
-              <p>{chamadoAtual.cliente}</p>
+              <label>Equipamento com Falha</label>
+              <p>{chamadoAtual.equipamento ? `${chamadoAtual.equipamento.nome} (${chamadoAtual.equipamento.tipo})` : 'N/A'}</p>
             </div>
             <div className={styles.infoBlock}>
-              <label>Equipamento com Falha</label>
-              <p>{chamadoAtual.equipamento}</p>
+              <label>Categoria</label>
+              <p>{chamadoAtual.categoria || 'Geral'}</p>
             </div>
             <div className={styles.infoBlock}>
               <label>Aberto em</label>
-              <p>{chamadoAtual.dataAbertura}</p>
+              <p>{chamadoAtual.dataCriacao ? new Date(chamadoAtual.dataCriacao).toLocaleString('pt-BR') : 'N/A'}</p>
             </div>
             <div className={styles.descBlock}>
               <label>Problema Relatado (Sintoma)</label>
-              <p>{chamadoAtual.descricao}</p>
+              <p>{chamadoAtual.descricao || chamadoAtual.titulo}</p>
             </div>
           </section>
 
-          {/* Coluna Direita: Área de Resolução */}
           <section className={styles.resolutionSection}>
             <h2>Área Técnica (Parecer)</h2>
             <form onSubmit={handleFinalizar} className={styles.form}>
-              
               <div className={styles.inputGroup}>
                 <label>Status Atual</label>
                 <select 
@@ -97,10 +147,12 @@ const AtendimentoChamado = () => {
               </div>
 
               <div className={styles.inputGroup}>
-                <label>Parecer Técnico (RN004) {form.status === 'Concluído' && <span className={styles.required}>*Obrigatório</span>}</label>
+                <label>
+                  Parecer Técnico (RN004) {form.status === 'Concluído' && <span className={styles.required}>*Obrigatório</span>}
+                </label>
                 <textarea 
                   rows="8"
-                  placeholder="Descreva detalhadamente o que foi feito, peças trocadas ou solução aplicada..."
+                  placeholder="Descreva detalhadamente o que foi feito..."
                   value={form.parecer}
                   onChange={(e) => setForm({...form, parecer: e.target.value})}
                   required={form.status === 'Concluído'}
@@ -108,7 +160,7 @@ const AtendimentoChamado = () => {
               </div>
 
               <div className={styles.buttonGroup}>
-                <button type="button" className={styles.btnCancel} onClick={() => navigate('/fila-tecnico')}>
+                <button type="button" className={styles.btnCancel} onClick={() => navigate('/FilaTecnico')}>
                   Cancelar
                 </button>
                 <button type="submit" className={styles.btnSubmit}>

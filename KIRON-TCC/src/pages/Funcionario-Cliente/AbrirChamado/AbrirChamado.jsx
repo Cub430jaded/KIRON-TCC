@@ -1,90 +1,75 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 import styles from './AbrirChamado.module.css';
 
 const AbrirChamado = () => {
   const navigate = useNavigate();
 
-  // Estados dos Campos do Formulário conforme especificação do TCC
-  const [equipamento, setEquipamento] = useState('');
+  const [equipamentoId, setEquipamentoId] = useState('');
   const [categoria, setCategoria] = useState('Hardware');
   const [urgencia, setUrgencia] = useState('Média');
   const [descricao, setDescricao] = useState('');
+  const [titulo, setTitulo] = useState('');
 
-  // Lista de Equipamentos (Simulando o consumo de GET /api/equipamentos)
-  const [listaEquipamentos, setListaEquipamentos] = useState([
-    { id: '1', nome: 'Notebook Dell - ID #1' },
-    { id: '2', nome: 'PC Desktop Recepção - ID #2' },
-    { id: '3', nome: 'PC Desktop Financeiro - ID #3' },
-    { id: '4', nome: 'Servidor Local Data Center - ID #4' },
-    { id: '5', nome: 'Impressora HP Laser - ID #5' }
-  ]);
+  const [listaEquipamentos, setListaEquipamentos] = useState([]);
+  const [carregandoEquipamentos, setCarregandoEquipamentos] = useState(true);
 
   useEffect(() => {
-    // Validação da Sessão do Usuário
     const estaLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
     if (!estaLogado) {
-      navigate('/Login');
+      navigate('/login');
+      return;
     }
+
+    const buscarEquipamentos = async () => {
+      try {
+        const res = await api.get('/equipamentos');
+        setListaEquipamentos(res.data);
+      } catch (err) {
+        console.error('Erro ao buscar equipamentos:', err);
+      } finally {
+        setCarregandoEquipamentos(false);
+      }
+    };
+
+    buscarEquipamentos();
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('kiron_usuario_logado');
     localStorage.removeItem('kiron_usuario_logado_dados');
-    navigate('/Login');
+    navigate('/login');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!equipamento) {
+    if (!equipamentoId) {
       alert('Por favor, selecione o equipamento afetado.');
       return;
     }
 
-    // Pega dados do usuário logado
-    const usuarioLogado = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
-    const nomeSolicitante = usuarioLogado?.nome || 'Bruno Silva';
-    const dataAtual = new Date().toLocaleDateString('pt-BR');
-
-    // Gera ID / Protocolo único
-    const numeroId = Math.floor(1000 + Math.random() * 9000);
-    const novoProtocolo = `#KR-${numeroId}`;
-
-    // Estrutura completa do chamado conforme padrão do TCC
-    const novoTicket = {
-      id: `KR-${numeroId}`,
-      protocolo: novoProtocolo,
-      equipamento: equipamento,
-      categoria: categoria,
-      urgencia: urgencia,
-      prioridade: urgencia, // para compatibilidade de termos
-      status: 'Aberto',
-      dataAbertura: dataAtual,
-      solicitante: nomeSolicitante,
-      descricao: descricao,
-      parecerTecnico: '', // Será preenchido pelo técnico no fechamento
-      historico: [
-        {
-          dataHora: `${dataAtual} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
-          evento: 'Aberto pelo cliente',
-          descricao: `Chamado registrado por ${nomeSolicitante}.`
-        }
-      ]
+    const payload = {
+      titulo: titulo || `${categoria} - ${urgencia}`,
+      descricao,
+      categoria,
+      prioridade: urgencia,
+      equipamentoId: Number(equipamentoId)
     };
 
-    // Grava no localStorage
-    const chamadosSalvos = JSON.parse(localStorage.getItem('kiron_lista_chamados')) || [];
-    const novaLista = [novoTicket, ...chamadosSalvos];
-    localStorage.setItem('kiron_lista_chamados', JSON.stringify(novaLista));
-
-    // Redireciona para a lista de chamados
-    navigate('/MeusChamados');
+    try {
+      await api.post('/chamados', payload);
+      alert('Chamado registrado com sucesso no banco de dados!');
+      navigate('/MeusChamados');
+    } catch (err) {
+      console.error('Erro ao registrar chamado:', err);
+      alert('Erro ao registrar chamado no servidor.');
+    }
   };
 
   return (
     <div className={styles.pageWrapper}>
-      {/* SIDEBAR PADRÃO */}
       <aside className={styles.sidebar}>
         <div className={styles.logoArea} onClick={() => navigate('/HomeCliente')}>
           <span className={styles.logoKiron}>Kiron</span>
@@ -113,10 +98,7 @@ const AbrirChamado = () => {
         </div>
       </aside>
 
-      {/* CONTEÚDO PRINCIPAL */}
       <main className={styles.mainContent}>
-        
-        {/* CABEÇALHO */}
         <header className={styles.headerBlock}>
           <div>
             <h1>Abrir Novo Chamado</h1>
@@ -127,7 +109,6 @@ const AbrirChamado = () => {
           </button>
         </header>
 
-        {/* FORMULÁRIO */}
         <section className={styles.sheetSection}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
@@ -136,8 +117,21 @@ const AbrirChamado = () => {
           </div>
 
           <form onSubmit={handleSubmit} className={styles.formSheet}>
-            
-            {/* SELECT DE EQUIPAMENTO (GET /api/equipamentos) */}
+            <div className={styles.inputGroupFull}>
+              <label className={styles.label} htmlFor="textTitulo">
+                <i className="fa-solid fa-heading"></i> Assunto / Título Resumido:
+              </label>
+              <input
+                id="textTitulo"
+                type="text"
+                className={styles.selectField}
+                placeholder="Ex: Monitor piscando sem sinal de vídeo"
+                value={titulo}
+                onChange={(e) => setTitulo(e.target.value)}
+                required
+              />
+            </div>
+
             <div className={styles.inputGroup}>
               <label className={styles.label} htmlFor="selectEquipamento">
                 <i className="fa-solid fa-desktop"></i> Equipamento Afetado:
@@ -145,24 +139,25 @@ const AbrirChamado = () => {
               <select
                 id="selectEquipamento"
                 className={styles.selectField}
-                value={equipamento}
-                onChange={(e) => setEquipamento(e.target.value)}
+                value={equipamentoId}
+                onChange={(e) => setEquipamentoId(e.target.value)}
                 required
               >
-                <option value="">-- Selecione o equipamento cadastrado --</option>
+                <option value="">
+                  {carregandoEquipamentos ? 'Carregando máquinas do banco...' : '-- Selecione o equipamento --'}
+                </option>
                 {listaEquipamentos.map((item) => (
-                  <option key={item.id} value={item.nome}>
-                    {item.nome}
+                  <option key={item.id} value={item.id}>
+                    #{item.id} - {item.nome} ({item.tipo})
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* SELECT DE CATEGORIA & SELECT DE URGÊNCIA (GRID DUPLO) */}
             <div className={styles.formRow}>
               <div className={styles.inputGroup}>
                 <label className={styles.label} htmlFor="selectCategoria">
-                  <i className="fa-solid fa-list"></i> Categoria do Problema:
+                  <i className="fa-solid fa-list"></i> Categoria:
                 </label>
                 <select
                   id="selectCategoria"
@@ -181,7 +176,7 @@ const AbrirChamado = () => {
 
               <div className={styles.inputGroup}>
                 <label className={styles.label} htmlFor="selectUrgencia">
-                  <i className="fa-solid fa-triangle-exclamation"></i> Nível de Urgência:
+                  <i className="fa-solid fa-triangle-exclamation"></i> Urgência:
                 </label>
                 <select
                   id="selectUrgencia"
@@ -197,7 +192,6 @@ const AbrirChamado = () => {
               </div>
             </div>
 
-            {/* CAMPO DE DESCRIÇÃO (TEXTAREA) */}
             <div className={styles.inputGroupFull}>
               <label className={styles.label} htmlFor="textDescricao">
                 <i className="fa-solid fa-align-left"></i> Descrição do Problema:
@@ -206,30 +200,23 @@ const AbrirChamado = () => {
                 id="textDescricao"
                 className={styles.textareaField}
                 rows="6"
-                placeholder="Descreva o problema com clareza (ex: A tela fica piscando ao abrir a planilha de faturamento)..."
+                placeholder="Descreva o problema com clareza..."
                 value={descricao}
                 onChange={(e) => setDescricao(e.target.value)}
                 required
               ></textarea>
             </div>
 
-            {/* AÇÕES DE ENVIO E CANCELAMENTO */}
             <div className={styles.formActions}>
               <button type="submit" className={styles.btnSubmit}>
                 <i className="fa-solid fa-paper-plane"></i> Enviar Chamado
               </button>
-              <button
-                type="button"
-                className={styles.btnCancel}
-                onClick={() => navigate('/MeusChamados')}
-              >
+              <button type="button" className={styles.btnCancel} onClick={() => navigate('/MeusChamados')}>
                 Cancelar
               </button>
             </div>
-
           </form>
         </section>
-
       </main>
     </div>
   );

@@ -1,5 +1,6 @@
 ﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 import styles from './CadastroCliente.module.css';
 
 const CadastroCliente = () => {
@@ -24,14 +25,14 @@ const CadastroCliente = () => {
       .replace(/\D/g, '')
       .replace(/^(\d{2})(\d)/, '$1.$2')
       .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-      .replace(/\.(\d{3})(\d)/, '.$1/$2')       .replace(/(\d{4})(\d{1,2})$/, '$1-$2')
+      .replace(/\.(\d{3})(\d)/, '.$1/$2') .replace(/(\d{4})(\d{1,2})$/, '$1-$2')
       .slice(0, 18);
   };
 
   const aplicarMascaraTelefone = (valor) => {
     return valor
       .replace(/\D/g, '')
-      .replace(/^(\d{2})(\d)/, '($1) $2')       .replace(/(\d{5})(\d{4})$/, '$1-$2')
+      .replace(/^(\d{2})(\d)/, '($1) $2') .replace(/(\d{5})(\d{4})$/, '$1-$2')
       .slice(0, 15);
   };
 
@@ -52,7 +53,7 @@ const CadastroCliente = () => {
     }
   };
 
-  const handleCadastrar = (e) => {
+  const handleCadastrar = async (e) => {
     e.preventDefault();
 
     if (nome.trim().split(/\s+/).length < 2) {
@@ -73,30 +74,45 @@ const CadastroCliente = () => {
       return;
     }
 
-    // Estrutura do objeto de usuário cadastrado
-    const novoUsuario = {
+    const payload = {
       nome: nome.trim(),
       email: email.trim(),
+      senha: senha,
       telefone: telefone,
-      cargo: 'Responsável Técnico / Operações',
+      cnpj: cnpj,
       empresa: razaoSocial.trim() || 'Sua Empresa S.A.',
-      cnpj: cnpj
+      cargo: 'Responsável Técnico / Operações',
+      perfil: 'CLIENTE'
     };
 
-    // Salva os dados do usuário e ativa a sessão no localStorage
-    localStorage.setItem('kiron_usuario_logado', 'true');
-    localStorage.setItem('kiron_usuario_logado_dados', JSON.stringify(novoUsuario));
-    localStorage.setItem('kiron_senha_usuario', senha);
+    try {
+      // Envia o cadastro do cliente para a API Java / Spring Boot
+      const res = await api.post('/auth/cadastrar', payload);
+      const usuarioCadastrado = res.data;
 
-    // Redireciona diretamente para o Dashboard do Cliente
-    navigate('/HomeCliente');
+      // Salva os dados retornados pela API na sessão local
+      localStorage.setItem('kiron_usuario_logado', 'true');
+      localStorage.setItem(
+        'kiron_usuario_logado_dados',
+        JSON.stringify(usuarioCadastrado || payload)
+      );
+
+      alert('Cadastro realizado com sucesso no MySQL!');
+
+      // Redireciona para o Dashboard do Cliente
+      navigate('/HomeCliente');
+    } catch (err) {
+      console.error('Erro ao cadastrar cliente:', err);
+      const msgErro = err.response?.data || 'Erro de conexão com o servidor Java!';
+      alert('Falha no cadastro: ' + msgErro);
+    }
   };
 
   return (
     <div className={styles.pageWrapper}>
       <div className={styles['container-fundo']}>
         <div className={styles['card']}>
-          <div className={styles.logoArea}>
+          <div className={styles.logoArea} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
             <span className={styles.logoKiron}>Kiron</span>
             <span className={styles.logoTi}>TI</span>
           </div>
@@ -189,7 +205,7 @@ const CadastroCliente = () => {
               />
             </div>
 
-            {/* Senhas e Pop-up de Erro da Senha com Botões de Olho */}
+            {/* Senhas com Botão de Olho */}
             <div className={styles.inputGroup}>
               <div className={styles.rowGrid}>
                 

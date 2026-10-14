@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 import styles from './HomeCliente.module.css';
 
 const HomeCliente = () => {
@@ -11,22 +12,20 @@ const HomeCliente = () => {
   });
 
   const [estatisticas, setEstatisticas] = useState({
-    abertos: 1,
-    emAndamento: 1,
-    concluidos: 2
+    abertos: 0,
+    emAndamento: 0,
+    concluidos: 0
   });
 
   const [chamadosRecentes, setChamadosRecentes] = useState([]);
 
   useEffect(() => {
-    // Validação da Sessão
     const estaLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
     if (!estaLogado) {
-      navigate('/Login');
+      navigate('/login');
       return;
     }
 
-    // Carrega dados do usuário logado (Nome e Setor/Cargo)
     const dadosSalvos = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
     if (dadosSalvos) {
       setUsuario({
@@ -35,63 +34,41 @@ const HomeCliente = () => {
       });
     }
 
-    // Carrega os chamados do localStorage para a lista rápida e contadores
-    const listaChamados = JSON.parse(localStorage.getItem('kiron_lista_chamados')) || [
-      {
-        id: 'KR-8021',
-        protocolo: '#KR-8021',
-        equipamento: 'PC-FINANCEIRO-02',
-        categoria: 'Rede',
-        assunto: 'Lentidão na rede do setor Financeiro',
-        status: 'Em Andamento',
-        dataAbertura: '12/10/2026'
-      },
-      {
-        id: 'KR-8019',
-        protocolo: '#KR-8019',
-        equipamento: 'PC-RECEPCAO-01',
-        categoria: 'Software',
-        assunto: 'Instalação de software de edição no PC-04',
-        status: 'Aberto',
-        dataAbertura: '11/10/2026'
-      },
-      {
-        id: 'KR-7994',
-        protocolo: '#KR-7994',
-        equipamento: 'SERVIDOR-LOCAL',
-        categoria: 'Segurança',
-        assunto: 'Configuração de rotina de backup em nuvem',
-        status: 'Concluído',
-        dataAbertura: '09/10/2026'
+    const carregarDadosDashboard = async () => {
+      try {
+        const res = await api.get('/chamados');
+        const listaChamados = res.data;
+
+        let qtdAbertos = 0;
+        let qtdEmAndamento = 0;
+        let qtdConcluidos = 0;
+
+        listaChamados.forEach((c) => {
+          const st = (c.status || '').toLowerCase();
+          if (st.includes('aberto') || st.includes('pendente')) qtdAbertos++;
+          else if (st.includes('andamento') || st.includes('atendimento')) qtdEmAndamento++;
+          else if (st.includes('concluído') || st.includes('finalizado')) qtdConcluidos++;
+        });
+
+        setEstatisticas({
+          abertos: qtdAbertos,
+          emAndamento: qtdEmAndamento,
+          concluidos: qtdConcluidos
+        });
+
+        setChamadosRecentes(listaChamados.slice(0, 3));
+      } catch (err) {
+        console.error('Erro ao conectar com API:', err);
       }
-    ];
+    };
 
-    // Calcula os contadores dinamicamente
-    let qtdAbertos = 0;
-    let qtdEmAndamento = 0;
-    let qtdConcluidos = 0;
-
-    listaChamados.forEach(c => {
-      const st = (c.status || '').toLowerCase();
-      if (st.includes('aberto') || st.includes('pendente')) qtdAbertos++;
-      else if (st.includes('andamento') || st.includes('atendimento')) qtdEmAndamento++;
-      else if (st.includes('concluído') || st.includes('finalizado')) qtdConcluidos++;
-    });
-
-    setEstatisticas({
-      abertos: qtdAbertos || 1,
-      emAndamento: qtdEmAndamento || 1,
-      concluidos: qtdConcluidos || 2
-    });
-
-    // Pega os últimos 3 chamados para a lista rápida
-    setChamadosRecentes(listaChamados.slice(0, 3));
+    carregarDadosDashboard();
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('kiron_usuario_logado');
     localStorage.removeItem('kiron_usuario_logado_dados');
-    navigate('/Login');
+    navigate('/login');
   };
 
   const getBadgeClass = (status) => {
@@ -103,7 +80,6 @@ const HomeCliente = () => {
 
   return (
     <div className={styles.pageWrapper}>
-      {/* SIDEBAR PADRÃO */}
       <aside className={styles.sidebar}>
         <div className={styles.logoArea} onClick={() => navigate('/HomeCliente')}>
           <span className={styles.logoKiron}>Kiron</span>
@@ -132,10 +108,7 @@ const HomeCliente = () => {
         </div>
       </aside>
 
-      {/* CONTEÚDO PRINCIPAL */}
       <main className={styles.mainContent}>
-        
-        {/* HEADER DE BOAS-VINDAS */}
         <header className={styles.headerBlock}>
           <div>
             <h1>Olá, {usuario.nome}</h1>
@@ -148,7 +121,6 @@ const HomeCliente = () => {
           </button>
         </header>
 
-        {/* 3 CARDS DE RESUMO / INDICADORES */}
         <section className={styles.cardsGrid}>
           <div className={styles.summaryCard}>
             <div className={`${styles.cardIcon} ${styles.iconAberto}`}>
@@ -181,7 +153,6 @@ const HomeCliente = () => {
           </div>
         </section>
 
-        {/* LISTA RÁPIDA DOS ÚLTIMOS CHAMADOS */}
         <section className={styles.sheetSection}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
@@ -201,40 +172,35 @@ const HomeCliente = () => {
                   <th>Categoria</th>
                   <th>Assunto</th>
                   <th>Status</th>
-                  <th>Abertura</th>
                   <th>Ação</th>
                 </tr>
               </thead>
               <tbody>
                 {chamadosRecentes.length > 0 ? (
-                  chamadosRecentes.map((item, idx) => {
-                    const idLimpo = (item.protocolo || item.id || '').replace('#', '');
-                    return (
-                      <tr key={idx}>
-                        <td className={styles.codeCell}>{item.protocolo || `#${item.id}`}</td>
-                        <td>{item.equipamento}</td>
-                        <td>{item.categoria}</td>
-                        <td><strong>{item.assunto}</strong></td>
-                        <td>
-                          <span className={`${styles.badgeStatus} ${getBadgeClass(item.status)}`}>
-                            {item.status}
-                          </span>
-                        </td>
-                        <td>{item.dataAbertura}</td>
-                        <td>
-                          <button
-                            className={styles.actionBtn}
-                            onClick={() => navigate(`/DetalhesChamado/${idLimpo}`, { state: { protocolo: item.protocolo || `#${item.id}` } })}
-                          >
-                            <i className="fa-solid fa-eye"></i> Detalhes
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })
+                  chamadosRecentes.map((item) => (
+                    <tr key={item.id}>
+                      <td className={styles.codeCell}>#KR-{item.id}</td>
+                      <td>{item.equipamento?.nome || 'N/A'}</td>
+                      <td>{item.categoria}</td>
+                      <td><strong>{item.titulo || item.descricao}</strong></td>
+                      <td>
+                        <span className={`${styles.badgeStatus} ${getBadgeClass(item.status)}`}>
+                          {item.status}
+                        </span>
+                      </td>
+                      <td>
+                        <button
+                          className={styles.actionBtn}
+                          onClick={() => navigate(`/DetalhesChamado/${item.id}`)}
+                        >
+                          <i className="fa-solid fa-eye"></i> Detalhes
+                        </button>
+                      </td>
+                    </tr>
+                  ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className={styles.noResults}>
+                    <td colSpan="6" className={styles.noResults}>
                       Nenhum chamado registrado no momento.
                     </td>
                   </tr>
@@ -243,7 +209,6 @@ const HomeCliente = () => {
             </table>
           </div>
         </section>
-
       </main>
     </div>
   );

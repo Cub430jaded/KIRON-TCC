@@ -1,46 +1,88 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModalDetalhesChamado from '../../../components/ModalDetalhesChamado/ModalDetalhesChamado';
+import api from '../../services/api';
 import styles from './FilaTecnico.module.css';
 
 const FilaTecnico = () => {
   const navigate = useNavigate();
 
-  // Estados do Modal
   const [modalAberto, setModalAberto] = useState(false);
   const [chamadoSelecionado, setChamadoSelecionado] = useState(null);
+  const [filtro, setFiltro] = useState('Fila Geral');
 
-  // Filtro da Fila
-  const [filtro, setFiltro] = useState('Fila Geral'); // 'Fila Geral' ou 'Meus Chamados'
+  const [chamados, setChamados] = useState([]);
+  const [carregando, setCarregando] = useState(true);
 
-  // Mock simulando o banco de dados
-  const chamados = [
-    { id: '1048', cliente: 'TechCorp', equipamento: 'Servidor Local', prioridade: 'Alta', status: 'Aberto', tecnico: null, descricao: 'Servidor fora do ar, parando a empresa.' },
-    { id: '1047', cliente: 'Clínica Sorriso', equipamento: 'PC Recepção', prioridade: 'Média', status: 'Aberto', tecnico: null, descricao: 'Sistema de agendamento travando.' },
-    { id: '1045', cliente: 'TechCorp', equipamento: 'Notebook Diretor', prioridade: 'Alta', status: 'Em Andamento', tecnico: 'Felipe Silva', descricao: 'Troca de SSD e backup urgente.' },
-    { id: '1044', cliente: 'Padaria Central', equipamento: 'PDV 01', prioridade: 'Baixa', status: 'Em Andamento', tecnico: 'Felipe Silva', descricao: 'Impressora de nota fiscal com falha.' },
-  ];
+  const [tecnico, setTecnico] = useState({
+    nome: 'Técnico',
+    cargo: 'Suporte Nível 2'
+  });
 
-  // Lógica para filtrar o que o técnico vê
-  const chamadosFiltrados = chamados.filter(chamado => {
-    if (filtro === 'Fila Geral') return chamado.status === 'Aberto' && chamado.tecnico === null;
-    if (filtro === 'Meus Chamados') return chamado.tecnico === 'Felipe Silva' && chamado.status === 'Em Andamento';
+  const carregarChamados = async () => {
+    try {
+      setCarregando(true);
+      const res = await api.get('/chamados');
+      setChamados(res.data);
+    } catch (err) {
+      console.error('Erro ao buscar fila de chamados:', err);
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  useEffect(() => {
+    const estaLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
+    if (!estaLogado) {
+      navigate('/login');
+      return;
+    }
+
+    const dadosUsuario = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+    if (dadosUsuario) {
+      setTecnico({
+        nome: dadosUsuario.nome || 'Técnico de Suporte',
+        cargo: dadosUsuario.cargo || 'Equipe Kiron TI'
+      });
+    }
+
+    carregarChamados();
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('kiron_usuario_logado');
+    localStorage.removeItem('kiron_usuario_logado_dados');
+    navigate('/login');
+  };
+
+  const chamadosFiltrados = chamados.filter((chamado) => {
+    const st = (chamado.status || '').toLowerCase();
+    if (filtro === 'Fila Geral') return st === 'aberto' || st === 'pendente';
+    if (filtro === 'Meus Chamados') return st === 'em andamento' || st === 'atendimento';
     return true;
   });
+
+  const qtdFilaGeral = chamados.filter(c => (c.status || '').toLowerCase() === 'aberto').length;
+  const qtdMeusChamados = chamados.filter(c => (c.status || '').toLowerCase() === 'em andamento').length;
 
   const abrirDetalhes = (chamado) => {
     setChamadoSelecionado(chamado);
     setModalAberto(true);
   };
 
-  const assumirChamado = (id) => {
-    // Aqui vai o PUT/PATCH para a API Java 21 para vincular o técnico ao chamado
-    alert(`Você assumiu o chamado #${id}! Ele agora está na sua lista de atendimentos.`);
+  const assumirChamado = async (id) => {
+    try {
+      await api.put(`/chamados/${id}/status`, { status: 'Em Andamento' });
+      alert(`Você assumiu o chamado #KR-${id}! Ele agora está em andamento na sua lista.`);
+      carregarChamados();
+    } catch (err) {
+      console.error('Erro ao assumir chamado:', err);
+      alert('Erro ao assumir o chamado no banco de dados.');
+    }
   };
 
   return (
     <div className={styles.pageContainer}>
-      {/* Menu Lateral - Versão Técnico (Cores mais escuras/diferenciadas) */}
       <aside className={styles.sidebar}>
         <div className={styles.sidebarBrand}>
           <h2>Kiron<span className={styles.lightText}>TI</span> <span className={styles.badgeStaff}>STAFF</span></h2>
@@ -48,8 +90,8 @@ const FilaTecnico = () => {
         <div className={styles.techProfile}>
           <div className={styles.avatar}><i className="fa-solid fa-headset"></i></div>
           <div>
-            <p className={styles.techName}>Felipe Silva</p>
-            <p className={styles.techRole}>Técnico Nível 2</p>
+            <p className={styles.techName}>{tecnico.nome}</p>
+            <p className={styles.techRole}>{tecnico.cargo}</p>
           </div>
         </div>
         <nav className={styles.sidebarNav}>
@@ -64,37 +106,34 @@ const FilaTecnico = () => {
           </button>
         </nav>
         <div className={styles.sidebarFooter}>
-          <button className={styles.logoutBtn} onClick={() => navigate('/')}>
+          <button className={styles.logoutBtn} onClick={handleLogout}>
             <i className="fa-solid fa-arrow-right-from-bracket"></i> Sair
           </button>
         </div>
       </aside>
 
-      {/* Conteúdo Principal */}
       <main className={styles.mainContent}>
         <header className={styles.topHeader}>
           <h1>Painel de Atendimentos</h1>
         </header>
 
-        {/* KPIs do Técnico */}
         <section className={styles.kpiGrid}>
           <div className={styles.kpiCard}>
             <div className={styles.kpiIconAlert}><i className="fa-solid fa-triangle-exclamation"></i></div>
             <div className={styles.kpiInfo}>
               <p>Fila Geral (Não Assumidos)</p>
-              <h3>2</h3>
+              <h3>{qtdFilaGeral}</h3>
             </div>
           </div>
           <div className={styles.kpiCard}>
             <div className={styles.kpiIconSuccess}><i className="fa-solid fa-screwdriver-wrench"></i></div>
             <div className={styles.kpiInfo}>
               <p>Meus Chamados Atuais</p>
-              <h3>2</h3>
+              <h3>{qtdMeusChamados}</h3>
             </div>
           </div>
         </section>
 
-        {/* Fila de Trabalho */}
         <section className={styles.listSection}>
           <div className={styles.filterTabs}>
             <button 
@@ -116,22 +155,26 @@ const FilaTecnico = () => {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Cliente</th>
                   <th>Equipamento</th>
+                  <th>Categoria</th>
                   <th>Prioridade</th>
                   <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
-                {chamadosFiltrados.length > 0 ? (
+                {carregando ? (
+                  <tr>
+                    <td colSpan="5" className={styles.emptyState}>Carregando chamados do banco de dados...</td>
+                  </tr>
+                ) : chamadosFiltrados.length > 0 ? (
                   chamadosFiltrados.map((chamado) => (
                     <tr key={chamado.id}>
-                      <td><strong>#{chamado.id}</strong></td>
-                      <td>{chamado.cliente}</td>
-                      <td>{chamado.equipamento}</td>
+                      <td><strong>#KR-{chamado.id}</strong></td>
+                      <td>{chamado.equipamento ? `${chamado.equipamento.nome}` : 'Equipamento N/A'}</td>
+                      <td>{chamado.categoria || 'Geral'}</td>
                       <td>
-                        <span className={`${styles.badge} ${styles['prioridade' + chamado.prioridade]}`}>
-                          {chamado.prioridade}
+                        <span className={`${styles.badge} ${styles['prioridade' + (chamado.prioridade || 'Media')]}`}>
+                          {chamado.prioridade || 'Média'}
                         </span>
                       </td>
                       <td>
@@ -140,13 +183,12 @@ const FilaTecnico = () => {
                             <i className="fa-solid fa-eye"></i>
                           </button>
                           
-                          {/* Muda o botão dependendo de quem é o chamado */}
                           {filtro === 'Fila Geral' ? (
                             <button className={styles.btnAssumir} onClick={() => assumirChamado(chamado.id)}>
                               Assumir
                             </button>
                           ) : (
-                            <button className={styles.btnResolver} onClick={() => navigate('/atendimentoChamado')}>
+                            <button className={styles.btnResolver} onClick={() => navigate(`/atendimentoChamado/${chamado.id}`)}>
                               Resolver
                             </button>
                           )}
@@ -157,7 +199,7 @@ const FilaTecnico = () => {
                 ) : (
                   <tr>
                     <td colSpan="5" className={styles.emptyState}>
-                      Nenhum chamado nesta lista. Bom trabalho!
+                      Nenhum chamado nesta lista.
                     </td>
                   </tr>
                 )}
@@ -167,7 +209,6 @@ const FilaTecnico = () => {
         </section>
       </main>
 
-      {/* Modal reaproveitado */}
       <ModalDetalhesChamado 
         isOpen={modalAberto} 
         onClose={() => setModalAberto(false)} 

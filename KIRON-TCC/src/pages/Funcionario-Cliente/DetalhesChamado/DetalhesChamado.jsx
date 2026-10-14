@@ -1,59 +1,40 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import api from '../../services/api';
 import styles from './DetalhesChamado.module.css';
 
 const DetalhesChamado = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { id } = useParams();
 
   const [chamado, setChamado] = useState(null);
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    // Validação da Sessão
     const estaLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
     if (!estaLogado) {
-      navigate('/Login');
+      navigate('/login');
       return;
     }
 
-    // Busca o ID vindo da rota ou do state
-    const ticketIdAlvo = id || location.state?.ticketId || location.state?.protocolo?.replace('#', '');
-    const listaSalva = JSON.parse(localStorage.getItem('kiron_lista_chamados')) || [];
+    const buscarDetalhes = async () => {
+      try {
+        const res = await api.get(`/chamados/${id}`);
+        setChamado(res.data);
+      } catch (err) {
+        console.error('Erro de conexão ou chamado não encontrado:', err);
+      } finally {
+        setCarregando(false);
+      }
+    };
 
-    // Procura o chamado correspondente
-    const encontrado = listaSalva.find(
-      (c) => (c.id === ticketIdAlvo) || (c.protocolo === `#${ticketIdAlvo}`) || (c.protocolo === ticketIdAlvo)
-    );
-
-    if (encontrado) {
-      setChamado(encontrado);
-    } else {
-      // Fallback de segurança caso acesse direto sem ID válido
-      setChamado(listaSalva[0] || {
-        id: 'KR-8021',
-        protocolo: '#KR-8021',
-        equipamento: 'PC-FINANCEIRO-02',
-        categoria: 'Rede',
-        urgencia: 'Alta',
-        status: 'Em Andamento',
-        dataAbertura: '12/10/2026',
-        solicitante: 'Bruno Silva',
-        assunto: 'Lentidão na rede do setor Financeiro',
-        descricao: 'Os computadores do setor financeiro estão apresentando quedas intermitentes de conexão.',
-        parecerTecnico: '',
-        historico: [
-          { dataHora: '12/10/2026 às 10:15', evento: 'Aberto pelo cliente', descricao: 'Chamado registrado no sistema.' },
-          { dataHora: '12/10/2026 às 10:35', evento: 'Técnico assumiu', descricao: 'Carlos Eduardo iniciou a verificação do switch.' }
-        ]
-      });
-    }
-  }, [id, location.state, navigate]);
+    if (id) buscarDetalhes();
+  }, [id, navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('kiron_usuario_logado');
     localStorage.removeItem('kiron_usuario_logado_dados');
-    navigate('/Login');
+    navigate('/login');
   };
 
   const getBadgeClass = (status) => {
@@ -63,11 +44,21 @@ const DetalhesChamado = () => {
     return styles.badgeConcluido;
   };
 
-  if (!chamado) return null;
+  if (carregando) {
+    return <div style={{ padding: '40px', color: '#fff' }}>Carregando detalhes do ticket...</div>;
+  }
+
+  if (!chamado) {
+    return (
+      <div style={{ padding: '40px', color: '#fff' }}>
+        <h2>Chamado #{id} não foi encontrado.</h2>
+        <button onClick={() => navigate('/MeusChamados')}>Voltar para Meus Chamados</button>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.pageWrapper}>
-      {/* SIDEBAR FIXA */}
       <aside className={styles.sidebar}>
         <div className={styles.logoArea} onClick={() => navigate('/HomeCliente')}>
           <span className={styles.logoKiron}>Kiron</span>
@@ -96,15 +87,13 @@ const DetalhesChamado = () => {
         </div>
       </aside>
 
-      {/* CONTEÚDO PRINCIPAL */}
       <main className={styles.mainContent}>
-        
-        {/* CABEÇALHO DO TICKET */}
         <header className={styles.headerBlock}>
           <div>
-            <h1>Detalhes do Ticket {chamado.protocolo || `#${chamado.id}`}</h1>
+            <h1>Detalhes do Ticket #KR-{chamado.id}</h1>
             <p className={styles.welcomeText}>
-              <i className="fa-solid fa-calendar-days"></i> Data de Abertura: {chamado.dataAbertura}
+              <i className="fa-solid fa-calendar-days"></i> Data de Abertura:{' '}
+              {chamado.dataCriacao ? new Date(chamado.dataCriacao).toLocaleString('pt-BR') : 'N/A'}
             </p>
           </div>
           <div className={styles.headerRight}>
@@ -117,7 +106,6 @@ const DetalhesChamado = () => {
           </div>
         </header>
 
-        {/* DADOS DO PROBLEMA */}
         <section className={styles.sheetSection}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
@@ -128,29 +116,30 @@ const DetalhesChamado = () => {
           <div className={styles.gridInfo}>
             <div className={styles.infoBox}>
               <span className={styles.infoLabel}>Equipamento Afetado:</span>
-              <span className={styles.infoValue}>{chamado.equipamento}</span>
+              <span className={styles.infoValue}>
+                {chamado.equipamento ? `${chamado.equipamento.nome} (${chamado.equipamento.tipo})` : 'N/A'}
+              </span>
             </div>
             <div className={styles.infoBox}>
               <span className={styles.infoLabel}>Categoria:</span>
               <span className={styles.infoValue}>{chamado.categoria}</span>
             </div>
             <div className={styles.infoBox}>
-              <span className={styles.infoLabel}>Urgência:</span>
-              <span className={styles.infoValue}>{chamado.urgencia || chamado.prioridade || 'Média'}</span>
+              <span className={styles.infoLabel}>Urgência / Prioridade:</span>
+              <span className={styles.infoValue}>{chamado.prioridade || 'Média'}</span>
             </div>
             <div className={styles.infoBox}>
-              <span className={styles.infoLabel}>Solicitante:</span>
-              <span className={styles.infoValue}>{chamado.solicitante}</span>
+              <span className={styles.infoLabel}>Sistema Operacional:</span>
+              <span className={styles.infoValue}>{chamado.equipamento?.sistemaOperacional || 'N/A'}</span>
             </div>
           </div>
 
           <div className={styles.descriptionBox}>
             <strong><i className="fa-solid fa-align-left"></i> Relato / Descrição do Problema:</strong>
-            <p>{chamado.descricao || chamado.assunto}</p>
+            <p>{chamado.descricao || chamado.titulo}</p>
           </div>
         </section>
 
-        {/* ÁREA DE PARECER TÉCNICO (EXIGÊNCIA DO TCC) */}
         <section className={styles.sheetSection}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>
@@ -171,35 +160,6 @@ const DetalhesChamado = () => {
             </div>
           )}
         </section>
-
-        {/* HISTÓRICO / TIMELINE DE MUDANÇAS DE STATUS */}
-        <section className={styles.sheetSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>
-              <i className="fa-solid fa-timeline"></i> Histórico e Linha do Tempo
-            </h2>
-          </div>
-
-          <div className={styles.timelineList}>
-            {chamado.historico && chamado.historico.length > 0 ? (
-              chamado.historico.map((hist, idx) => (
-                <div key={idx} className={styles.timelineItem}>
-                  <div className={styles.timelineDot}></div>
-                  <div className={styles.timelineContent}>
-                    <div className={styles.timelineHeaderTime}>
-                      <strong>{hist.evento}</strong>
-                      <span className={styles.timeTag}>{hist.dataHora}</span>
-                    </div>
-                    <p className={styles.timelineDesc}>{hist.descricao}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className={styles.noHistory}>Nenhum registro no histórico.</p>
-            )}
-          </div>
-        </section>
-
       </main>
     </div>
   );

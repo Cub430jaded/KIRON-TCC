@@ -1,43 +1,89 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 import styles from './CadastroEquipamento.module.css';
 
 const CadastroEquipamento = () => {
   const navigate = useNavigate();
 
-  // Estado para simular o banco de dados (SQLite)
-  const [equipamentos, setEquipamentos] = useState([
-    { id: 1, nome: 'PC Recepção', tipo: 'Desktop', os: 'Windows 11', status: 'Verde' },
-    { id: 2, nome: 'Notebook Financeiro', tipo: 'Notebook', os: 'Windows 10', status: 'Amarelo' },
-    { id: 3, nome: 'Servidor Local', tipo: 'Servidor', os: 'Linux Ubuntu', status: 'Vermelho' },
-  ]);
+  // Lista de equipamentos vindos da API Java / MySQL
+  const [equipamentos, setEquipamentos] = useState([]);
+  const [carregando, setCarregando] = useState(true);
 
-  // Estado para o formulário
+  // Formulário de novo equipamento
   const [novoEquipamento, setNovoEquipamento] = useState({
     nome: '',
     tipo: '',
-    os: ''
+    sistemaOperacional: ''
   });
 
-  const handleCadastrar = (e) => {
+  // 1. Busca os Equipamentos no MySQL via Axios
+  const carregarEquipamentos = async () => {
+    try {
+      setCarregando(true);
+      const res = await api.get('/equipamentos');
+      setEquipamentos(res.data);
+    } catch (error) {
+      console.error('Erro de conexão ao buscar equipamentos:', error);
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  useEffect(() => {
+    const estaLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
+    if (!estaLogado) {
+      navigate('/login');
+      return;
+    }
+
+    carregarEquipamentos();
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('kiron_usuario_logado');
+    localStorage.removeItem('kiron_usuario_logado_dados');
+    navigate('/login');
+  };
+
+  // 2. Cadastra um Equipamento no MySQL via Axios
+  const handleCadastrar = async (e) => {
     e.preventDefault();
-    // Simulação do POST para a API Spring Boot
-    const novo = {
-      id: equipamentos.length + 1,
+
+    const objetoEnvio = {
       nome: novoEquipamento.nome,
       tipo: novoEquipamento.tipo,
-      os: novoEquipamento.os,
-      status: 'Verde' // Toda máquina nova entra com saúde perfeita
+      sistemaOperacional: novoEquipamento.sistemaOperacional,
+      statusSaude: 'Verde' // Status inicial padrão
     };
-    
-    setEquipamentos([...equipamentos, novo]);
-    setNovoEquipamento({ nome: '', tipo: '', os: '' }); // Limpa o form
-    alert("Equipamento cadastrado com sucesso!");
+
+    try {
+      await api.post('/equipamentos', objetoEnvio);
+      alert('Equipamento cadastrado com sucesso no MySQL!');
+      setNovoEquipamento({ nome: '', tipo: '', sistemaOperacional: '' });
+      carregarEquipamentos();
+    } catch (error) {
+      console.error('Erro ao cadastrar equipamento:', error);
+      alert('Erro ao salvar equipamento. Verifique se a API está rodando.');
+    }
+  };
+
+  // 3. Deleta um Equipamento do MySQL via Axios
+  const handleDeletar = async (id) => {
+    if (!window.confirm(`Tem certeza que deseja remover o equipamento #${id}?`)) return;
+
+    try {
+      await api.delete(`/equipamentos/${id}`);
+      alert('Equipamento removido com sucesso!');
+      carregarEquipamentos();
+    } catch (error) {
+      console.error('Erro ao deletar equipamento:', error);
+      alert('Erro ao remover equipamento.');
+    }
   };
 
   return (
     <div className={styles.pageContainer}>
-      {/* Menu Lateral (Igual ao do Dashboard) */}
       <aside className={styles.sidebar}>
         <div className={styles.sidebarBrand}>
           <h2>Kiron<span className={styles.lightText}>TI</span> Gestor</h2>
@@ -52,28 +98,27 @@ const CadastroEquipamento = () => {
           <button className={styles.activeMenu}>
             <i className="fa-solid fa-desktop"></i> Equipamentos
           </button>
-          <button onClick={() => navigate('/Financeiro')}>
+          <button onClick={() => navigate('/financeiro')}>
             <i className="fa-solid fa-file-invoice-dollar"></i> Financeiro
           </button>
-          <button onClick={() => navigate('/Consultoria')}>
+          <button onClick={() => navigate('/consultoria')}>
             <i className="fa-solid fa-handshake"></i> Consultoria
           </button>
         </nav>
         <div className={styles.sidebarFooter}>
-          <button className={styles.logoutBtn} onClick={() => navigate('/')}>
+          <button className={styles.logoutBtn} onClick={handleLogout}>
             <i className="fa-solid fa-arrow-right-from-bracket"></i> Sair
           </button>
         </div>
       </aside>
 
-      {/* Conteúdo Principal */}
       <main className={styles.mainContent}>
         <header className={styles.topHeader}>
           <h1>Gerenciamento de Equipamentos</h1>
         </header>
 
         <div className={styles.contentGrid}>
-          {/* Coluna Esquerda: Formulário de Cadastro */}
+          {/* Formulário de Cadastro */}
           <section className={styles.formSection}>
             <h2>Novo Equipamento</h2>
             <p>Cadastre as máquinas para monitoramento e abertura de chamados.</p>
@@ -110,19 +155,19 @@ const CadastroEquipamento = () => {
                 <input 
                   type="text" 
                   placeholder="Ex: Windows 11 Pro" 
-                  value={novoEquipamento.os}
-                  onChange={(e) => setNovoEquipamento({...novoEquipamento, os: e.target.value})}
+                  value={novoEquipamento.sistemaOperacional}
+                  onChange={(e) => setNovoEquipamento({...novoEquipamento, sistemaOperacional: e.target.value})}
                   required 
                 />
               </div>
 
               <button type="submit" className={styles.btnSubmit}>
-                Cadastrar Máquina
+                Cadastrar no Banco
               </button>
             </form>
           </section>
 
-          {/* Coluna Direita: Tabela de Equipamentos */}
+          {/* Tabela de Equipamentos */}
           <section className={styles.listSection}>
             <h2>Parque Tecnológico ({equipamentos.length})</h2>
             
@@ -130,36 +175,51 @@ const CadastroEquipamento = () => {
               <table className={styles.customTable}>
                 <thead>
                   <tr>
-                    <th>Equipamento</th>
+                    <th>ID / Nome</th>
                     <th>Tipo</th>
                     <th>Status de Saúde</th>
                     <th>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {equipamentos.map((eq) => (
-                    <tr key={eq.id}>
-                      <td>
-                        <strong>{eq.nome}</strong>
-                        <br/>
-                        <span className={styles.osText}>{eq.os}</span>
-                      </td>
-                      <td>{eq.tipo}</td>
-                      <td>
-                        <span className={`${styles.statusBadge} ${styles['status' + eq.status]}`}>
-                          {eq.status}
-                        </span>
-                      </td>
-                      <td>
-                        <button className={styles.btnAction} title="Editar">
-                          <i className="fa-solid fa-pen"></i>
-                        </button>
-                        <button className={styles.btnDelete} title="Remover">
-                          <i className="fa-solid fa-trash"></i>
-                        </button>
+                  {carregando ? (
+                    <tr>
+                      <td colSpan="4" style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
+                        Carregando equipamentos do banco...
                       </td>
                     </tr>
-                  ))}
+                  ) : equipamentos.length > 0 ? (
+                    equipamentos.map((eq) => (
+                      <tr key={eq.id}>
+                        <td>
+                          <strong>#{eq.id} - {eq.nome}</strong>
+                          <br/>
+                          <span className={styles.osText}>{eq.sistemaOperacional}</span>
+                        </td>
+                        <td>{eq.tipo}</td>
+                        <td>
+                          <span className={`${styles.statusBadge} ${styles['status' + (eq.statusSaude || 'Verde')]}`}>
+                            {eq.statusSaude || 'Verde'}
+                          </span>
+                        </td>
+                        <td>
+                          <button 
+                            className={styles.btnDelete} 
+                            onClick={() => handleDeletar(eq.id)} 
+                            title="Remover do Banco"
+                          >
+                            <i className="fa-solid fa-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" style={{ textAlign: 'center', padding: '20px', color: '#888' }}>
+                        Nenhum equipamento cadastrado no banco ainda.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

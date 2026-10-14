@@ -1,31 +1,36 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 import styles from './LoginUsuario.module.css';
 
 const LoginUsuario = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [mostrarSenha, setMostrarSenha] = useState(false); // Estado para controlar a visibilidade da senha
+  const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  const handleLogin = (e) => {
-  e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  // Simulação de verificação de login
-  const usuarioAutenticado = {
-    nome: 'Bruno Silva Almeida',
-    email: emailInput, // ou e-mail digitado no login
-    telefone: '(11) 98765-4321',
-    cargo: 'Gestor de TI / Operações',
-    empresa: 'Sua Empresa S.A.'
+    try {
+      // Uso do Axios
+      const res = await api.post('/auth/login', { email, senha });
+      const usuarioAutenticado = res.data;
+      
+      localStorage.setItem('kiron_usuario_logado', 'true');
+      localStorage.setItem('kiron_usuario_logado_dados', JSON.stringify(usuarioAutenticado));
+
+      if (usuarioAutenticado.perfil === 'GESTOR' || usuarioAutenticado.perfil === 'TECNICO') {
+        navigate('/FilaTecnico');
+      } else {
+        navigate('/HomeCliente');
+      }
+    } catch (err) {
+      console.error('Erro no login:', err);
+      const msgErro = err.response?.data || 'Erro de conexão com o servidor Java!';
+      alert('Falha no login: ' + msgErro);
+    }
   };
-
-  // Define sessão como ativa e grava os dados do usuário
-  localStorage.setItem('kiron_usuario_logado', 'true');
-  localStorage.setItem('kiron_usuario_logado_dados', JSON.stringify(usuarioAutenticado));
-
-  navigate('/HomeCliente');
-};
 
   return (
     <div className={styles.pageWrapper}>
@@ -40,11 +45,11 @@ const LoginUsuario = () => {
 
           <form onSubmit={handleLogin} className={styles['form-grid']}>
             <div className={styles.inputGroup}>
-              <label className={styles['label-input']}>E-mail ou CNPJ</label>
+              <label className={styles['label-input']}>E-mail Corporativo</label>
               <input 
-                type="text" 
+                type="email" 
                 className={styles['input-field']} 
-                placeholder="seu@email.com ou CNPJ"
+                placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -53,7 +58,6 @@ const LoginUsuario = () => {
 
             <div className={styles.inputGroup}>
               <label className={styles['label-input']}>Senha</label>
-              {/* Container para alinhar o input e o ícone de olho lado a lado */}
               <div className={styles.passwordWrapper}>
                 <input 
                   type={mostrarSenha ? "text" : "password"} 
@@ -69,11 +73,7 @@ const LoginUsuario = () => {
                   onClick={() => setMostrarSenha(!mostrarSenha)}
                   title={mostrarSenha ? "Ocultar senha" : "Ver senha"}
                 >
-                  {mostrarSenha ? (
-                    <i className="fa-solid fa-eye-slash"></i>
-                  ) : (
-                    <i className="fa-solid fa-eye"></i>
-                  )}
+                  <i className={mostrarSenha ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"}></i>
                 </button>
               </div>
             </div>
@@ -86,11 +86,7 @@ const LoginUsuario = () => {
 
             <div className={styles.actions}>
               <button type="submit" className={styles['submit-btn']}>Entrar</button>
-              <button 
-                type="button" 
-                className={styles['cancel-btn']} 
-                onClick={() => navigate('/')}
-              >
+              <button type="button" className={styles['cancel-btn']} onClick={() => navigate('/')}>
                 Voltar
               </button>
             </div>

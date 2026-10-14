@@ -40,13 +40,7 @@ const AppRoutes = () => {
         <HashRouter>
             <Routes>
                 
-                {/* Rotas do Funcionario-Cliente */}
-                <Route path="/homeCliente" element={<HomeCliente />} />
-                <Route path="/abrirChamado" element={<AbrirChamado />} />
-                <Route path="/meusChamados" element={<MeusChamados />} />
-                <Route path="/detalhesChamado" element={<DetalhesChamado />} />
-                <Route path="/DetalhesChamado/:id" element={<DetalhesChamado />} />
-                <Route path="/perfilUsuario" element={<PerfilUsuario />} />
+                
                 
                 {/* Rotas do Público-Usuario */}
                 <Route path="/" element={< HomeInstitucional/>} />
@@ -56,6 +50,14 @@ const AppRoutes = () => {
                 <Route path="/planos" element={<Planos />} />
                 <Route path="/termosUso" element={<TermosUso />} />
                 <Route path="/politicaPrivacidade" element={<PoliticaPrivacidade />} />
+
+                {/* Rotas do Funcionario-Cliente */}
+                <Route path="/homeCliente" element={<HomeCliente />} />
+                <Route path="/abrirChamado" element={<AbrirChamado />} />
+                <Route path="/meusChamados" element={<MeusChamados />} />
+                <Route path="/detalhesChamado" element={<DetalhesChamado />} />
+                <Route path="/DetalhesChamado/:id" element={<DetalhesChamado />} />
+                <Route path="/perfilUsuario" element={<PerfilUsuario />} />
 
                 {/* Rotas do Gestor-Cliente */}
                 <Route path="/dashboardGestor" element={<DashboardGestor />} />

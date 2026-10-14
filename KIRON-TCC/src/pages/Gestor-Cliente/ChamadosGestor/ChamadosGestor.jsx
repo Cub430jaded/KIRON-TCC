@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModalDetalhesChamado from '../../../components/ModalDetalhesChamado/ModalDetalhesChamado';
+import api from '../../services/api';
 import styles from './ChamadosGestor.module.css';
 
 const ChamadosGestor = () => {
@@ -8,20 +9,47 @@ const ChamadosGestor = () => {
 
   const [modalAberto, setModalAberto] = useState(false);
   const [chamadoSelecionado, setChamadoSelecionado] = useState(null);
-
   const [filtroAtivo, setFiltroAtivo] = useState('Todos');
 
-  const chamados = [
-    { id: '1043', equipamento: 'PC RH', prioridade: 'Alta', status: 'Aberto', data: '09/10/2026', descricao: 'O computador liga mas a tela fica preta com um cursor piscando.' },
-    { id: '1042', equipamento: 'PC Recepção', prioridade: 'Alta', status: 'Em Andamento', data: '09/10/2026', descricao: 'Máquina apitando continuamente ao tentar ligar.' },
-    { id: '1041', equipamento: 'Notebook Financeiro', prioridade: 'Média', status: 'Aberto', data: '08/10/2026', descricao: 'Sistema de notas fiscais muito lento.' },
-    { id: '1039', equipamento: 'Servidor Local', prioridade: 'Baixa', status: 'Concluído', data: '05/10/2026', descricao: 'Criação de nova pasta na rede para o RH.' },
-    { id: '1035', equipamento: 'Impressora Rede', prioridade: 'Média', status: 'Concluído', data: '01/10/2026', descricao: 'Troca de toner e limpeza dos roletes.' },
-  ];
+  const [chamados, setChamados] = useState([]);
+  const [carregando, setCarregando] = useState(true);
 
-  const chamadosFiltrados = chamados.filter(chamado => {
+  // Busca lista real de chamados no banco MySQL via Axios
+  const carregarChamados = async () => {
+    try {
+      setCarregando(true);
+      const res = await api.get('/chamados');
+      setChamados(res.data);
+    } catch (err) {
+      console.error('Erro ao buscar chamados:', err);
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  useEffect(() => {
+    const estaLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
+    if (!estaLogado) {
+      navigate('/login');
+      return;
+    }
+
+    carregarChamados();
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('kiron_usuario_logado');
+    localStorage.removeItem('kiron_usuario_logado_dados');
+    navigate('/login');
+  };
+
+  const chamadosFiltrados = chamados.filter((chamado) => {
     if (filtroAtivo === 'Todos') return true;
-    return chamado.status === filtroAtivo;
+    const st = (chamado.status || '').toLowerCase();
+    if (filtroAtivo === 'Aberto') return st.includes('aberto') || st.includes('pendente');
+    if (filtroAtivo === 'Em Andamento') return st.includes('andamento') || st.includes('atendimento');
+    if (filtroAtivo === 'Concluído') return st.includes('concluído') || st.includes('finalizado');
+    return true;
   });
 
   const abrirDetalhes = (chamado) => {
@@ -45,15 +73,15 @@ const ChamadosGestor = () => {
           <button onClick={() => navigate('/cadastroEquipamento')}>
             <i className="fa-solid fa-desktop"></i> Equipamentos
           </button>
-          <button onClick={() => navigate('/Financeiro')}>
+          <button onClick={() => navigate('/financeiro')}>
             <i className="fa-solid fa-file-invoice-dollar"></i> Financeiro
           </button>
-          <button onClick={() => navigate('/Consultoria')}>
+          <button onClick={() => navigate('/consultoria')}>
             <i className="fa-solid fa-handshake"></i> Consultoria
           </button>
         </nav>
         <div className={styles.sidebarFooter}>
-          <button className={styles.logoutBtn} onClick={() => navigate('/')}>
+          <button className={styles.logoutBtn} onClick={handleLogout}>
             <i className="fa-solid fa-arrow-right-from-bracket"></i> Sair
           </button>
         </div>
@@ -62,7 +90,7 @@ const ChamadosGestor = () => {
       <main className={styles.mainContent}>
         <header className={styles.topHeader}>
           <h1>Central de Chamados</h1>
-          <button className={styles.btnNovaAbertura} onClick={() => alert('Em um cenário real, o Gestor também poderia abrir chamados por aqui!')}>
+          <button className={styles.btnNovaAbertura} onClick={() => navigate('/AbrirChamado')}>
             <i className="fa-solid fa-plus"></i> Abrir Chamado
           </button>
         </header>
@@ -73,7 +101,7 @@ const ChamadosGestor = () => {
               className={filtroAtivo === 'Todos' ? styles.tabActive : styles.tab}
               onClick={() => setFiltroAtivo('Todos')}
             >
-              Todos
+              Todos ({chamados.length})
             </button>
             <button 
               className={filtroAtivo === 'Aberto' ? styles.tabActive : styles.tab}
@@ -107,22 +135,30 @@ const ChamadosGestor = () => {
                 </tr>
               </thead>
               <tbody>
-                {chamadosFiltrados.length > 0 ? (
+                {carregando ? (
+                  <tr>
+                    <td colSpan="5" className={styles.emptyState}>
+                      Carregando chamados do banco...
+                    </td>
+                  </tr>
+                ) : chamadosFiltrados.length > 0 ? (
                   chamadosFiltrados.map((chamado) => (
                     <tr key={chamado.id}>
                       <td>
-                        <strong>#{chamado.id}</strong>
+                        <strong>#KR-{chamado.id}</strong>
                         <br/>
-                        <span className={styles.dateText}>{chamado.data}</span>
+                        <span className={styles.dateText}>
+                          {chamado.dataCriacao ? new Date(chamado.dataCriacao).toLocaleDateString('pt-BR') : 'Hoje'}
+                        </span>
                       </td>
-                      <td>{chamado.equipamento}</td>
+                      <td>{chamado.equipamento ? chamado.equipamento.nome : 'N/A'}</td>
                       <td>
-                        <span className={`${styles.badge} ${styles['prioridade' + chamado.prioridade]}`}>
-                          {chamado.prioridade}
+                        <span className={`${styles.badge} ${styles['prioridade' + (chamado.prioridade || 'Media')]}`}>
+                          {chamado.prioridade || 'Média'}
                         </span>
                       </td>
                       <td>
-                        <span className={`${styles.statusBadge} ${styles['status' + chamado.status.replace(' ', '')]}`}>
+                        <span className={`${styles.statusBadge} ${styles['status' + (chamado.status || 'Aberto').replace(/\s+/g, '')]}`}>
                           {chamado.status}
                         </span>
                       </td>

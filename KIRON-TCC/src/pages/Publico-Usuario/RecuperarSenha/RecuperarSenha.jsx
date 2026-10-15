@@ -11,7 +11,7 @@ const RecuperarSenha = () => {
     e.preventDefault();
     if (!email.trim()) return;
     
-    // Altera o estado para mostrar a mensagem de sucesso de forma limpa na tela
+
     setEnviado(true);
   };
 

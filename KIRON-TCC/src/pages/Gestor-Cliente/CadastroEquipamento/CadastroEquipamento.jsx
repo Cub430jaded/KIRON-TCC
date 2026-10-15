@@ -1,27 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../services/api';
+import api from '../../../services/api';
 import styles from './CadastroEquipamento.module.css';
 
 const CadastroEquipamento = () => {
   const navigate = useNavigate();
 
-  // Lista de equipamentos vindos da API Java / MySQL
   const [equipamentos, setEquipamentos] = useState([]);
   const [carregando, setCarregando] = useState(true);
 
-  // Formulário de novo equipamento
   const [novoEquipamento, setNovoEquipamento] = useState({
     nome: '',
     tipo: '',
     sistemaOperacional: ''
   });
 
-  // 1. Busca os Equipamentos no MySQL via Axios
   const carregarEquipamentos = async () => {
     try {
       setCarregando(true);
-      const res = await api.get('/equipamentos');
+      const usuarioLogado = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+      
+      // Busca apenas os equipamentos deste usuário
+      const res = await api.get(`/equipamentos/usuario/${usuarioLogado.id}`);
       setEquipamentos(res.data);
     } catch (error) {
       console.error('Erro de conexão ao buscar equipamentos:', error);
@@ -46,20 +46,21 @@ const CadastroEquipamento = () => {
     navigate('/login');
   };
 
-  // 2. Cadastra um Equipamento no MySQL via Axios
   const handleCadastrar = async (e) => {
     e.preventDefault();
+    const usuarioLogado = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
 
     const objetoEnvio = {
       nome: novoEquipamento.nome,
       tipo: novoEquipamento.tipo,
       sistemaOperacional: novoEquipamento.sistemaOperacional,
-      statusSaude: 'Verde' // Status inicial padrão
+      statusSaude: 'Verde',
+      usuarioId: usuarioLogado.id // <-- Vincula o equipamento ao gestor logado
     };
 
     try {
       await api.post('/equipamentos', objetoEnvio);
-      alert('Equipamento cadastrado com sucesso no MySQL!');
+      alert('Equipamento cadastrado com sucesso!');
       setNovoEquipamento({ nome: '', tipo: '', sistemaOperacional: '' });
       carregarEquipamentos();
     } catch (error) {
@@ -68,7 +69,6 @@ const CadastroEquipamento = () => {
     }
   };
 
-  // 3. Deleta um Equipamento do MySQL via Axios
   const handleDeletar = async (id) => {
     if (!window.confirm(`Tem certeza que deseja remover o equipamento #${id}?`)) return;
 
@@ -98,6 +98,9 @@ const CadastroEquipamento = () => {
           <button className={styles.activeMenu}>
             <i className="fa-solid fa-desktop"></i> Equipamentos
           </button>
+          <button onClick={() => navigate('/cadastroFuncionario')}>
+            <i className="fa-solid fa-user-plus"></i> Funcionários
+          </button>
           <button onClick={() => navigate('/financeiro')}>
             <i className="fa-solid fa-file-invoice-dollar"></i> Financeiro
           </button>
@@ -118,7 +121,6 @@ const CadastroEquipamento = () => {
         </header>
 
         <div className={styles.contentGrid}>
-          {/* Formulário de Cadastro */}
           <section className={styles.formSection}>
             <h2>Novo Equipamento</h2>
             <p>Cadastre as máquinas para monitoramento e abertura de chamados.</p>
@@ -167,7 +169,6 @@ const CadastroEquipamento = () => {
             </form>
           </section>
 
-          {/* Tabela de Equipamentos */}
           <section className={styles.listSection}>
             <h2>Parque Tecnológico ({equipamentos.length})</h2>
             

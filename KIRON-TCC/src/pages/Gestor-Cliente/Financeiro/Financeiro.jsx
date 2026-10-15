@@ -30,6 +30,9 @@ const Financeiro = () => {
           <button onClick={() => navigate('/cadastroEquipamento')}>
             <i className="fa-solid fa-desktop"></i> Equipamentos
           </button>
+          <button onClick={() => navigate('/cadastroFuncionario')}>
+            <i className="fa-solid fa-user-plus"></i> Funcionários
+          </button>
           <button className={styles.activeMenu}>
             <i className="fa-solid fa-file-invoice-dollar"></i> Financeiro
           </button>

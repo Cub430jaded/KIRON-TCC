@@ -1,35 +1,46 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../services/api';
+import api from '../../../services/api';
 import styles from './LoginUsuario.module.css';
 
 const LoginUsuario = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  
+  const [identificacao, setIdentificacao] = useState('');
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    try {
-      // Uso do Axios
-      const res = await api.post('/auth/login', { email, senha });
+    try 
+    {
+      
+      const res = await api.post('/auth/login', { login: identificacao, senha });
       const usuarioAutenticado = res.data;
       
       localStorage.setItem('kiron_usuario_logado', 'true');
       localStorage.setItem('kiron_usuario_logado_dados', JSON.stringify(usuarioAutenticado));
 
-      if (usuarioAutenticado.perfil === 'GESTOR' || usuarioAutenticado.perfil === 'TECNICO') {
-        navigate('/FilaTecnico');
-      } else {
-        navigate('/HomeCliente');
-      }
-    } catch (err) {
+      if (usuarioAutenticado.perfil === 'GESTOR') 
+        {
+        navigate('/dashboardGestor'); 
+        } 
+      else if (usuarioAutenticado.perfil === 'TECNICO') 
+        {
+        navigate('/FilaTecnico'); 
+        } 
+      else 
+        {
+          navigate('/HomeCliente'); 
+        }
+    }
+      catch (err) 
+      {
       console.error('Erro no login:', err);
       const msgErro = err.response?.data || 'Erro de conexão com o servidor Java!';
       alert('Falha no login: ' + msgErro);
-    }
+      }
   };
 
   return (
@@ -44,14 +55,15 @@ const LoginUsuario = () => {
           <p className={styles.subtitle}>Acesse o seu painel de gerenciamento</p>
 
           <form onSubmit={handleLogin} className={styles['form-grid']}>
+            
             <div className={styles.inputGroup}>
-              <label className={styles['label-input']}>E-mail Corporativo</label>
+              <label className={styles['label-input']}>E-mail ou CNPJ Corporativo</label>
               <input 
-                type="email" 
+                type="text" 
                 className={styles['input-field']} 
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu@email.com ou 00.000.000/0001-00"
+                value={identificacao}
+                onChange={(e) => setIdentificacao(e.target.value)}
                 required
               />
             </div>

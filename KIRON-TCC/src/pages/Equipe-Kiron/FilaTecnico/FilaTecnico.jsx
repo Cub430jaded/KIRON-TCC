@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModalDetalhesChamado from '../../../components/ModalDetalhesChamado/ModalDetalhesChamado';
-import api from '../../services/api';
+import api from '../../../services/api';
 import styles from './FilaTecnico.module.css';
 
 const FilaTecnico = () => {
@@ -55,15 +55,29 @@ const FilaTecnico = () => {
     navigate('/login');
   };
 
+  const dadosUsuarioLogado = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+  const meuId = dadosUsuarioLogado ? dadosUsuarioLogado.id : null;
+
   const chamadosFiltrados = chamados.filter((chamado) => {
     const st = (chamado.status || '').toLowerCase();
-    if (filtro === 'Fila Geral') return st === 'aberto' || st === 'pendente';
-    if (filtro === 'Meus Chamados') return st === 'em andamento' || st === 'atendimento';
+    
+    if (filtro === 'Fila Geral') {
+      return st === 'aberto' || st === 'pendente';
+    }
+    
+    if (filtro === 'Meus Chamados') {
+      // Só mostra se estiver em andamento E se o tecnicoId for igual ao meu
+      return (st === 'em andamento' || st === 'atendimento') && chamado.tecnicoId === meuId;
+    }
+    
     return true;
   });
 
   const qtdFilaGeral = chamados.filter(c => (c.status || '').toLowerCase() === 'aberto').length;
-  const qtdMeusChamados = chamados.filter(c => (c.status || '').toLowerCase() === 'em andamento').length;
+  // Atualiza o KPI para contar apenas os MEUS chamados
+  const qtdMeusChamados = chamados.filter(c => 
+    (c.status || '').toLowerCase() === 'em andamento' && c.tecnicoId === meuId
+  ).length;
 
   const abrirDetalhes = (chamado) => {
     setChamadoSelecionado(chamado);
@@ -72,7 +86,14 @@ const FilaTecnico = () => {
 
   const assumirChamado = async (id) => {
     try {
-      await api.put(`/chamados/${id}/status`, { status: 'Em Andamento' });
+      const dadosUsuario = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+      
+      const payload = { 
+        status: 'Em Andamento',
+        tecnicoId: String(dadosUsuario.id) // Envia o ID do técnico para o Java
+      };
+
+      await api.put(`/chamados/${id}/status`, payload);
       alert(`Você assumiu o chamado #KR-${id}! Ele agora está em andamento na sua lista.`);
       carregarChamados();
     } catch (err) {

@@ -16,10 +16,8 @@ const Planos = () => {
           <h1>Nossos Planos</h1>
           <p className={styles.subtitle}>Escolha a solução ideal em TI para impulsionar a sua empresa</p>
 
-          {/* Grid de Planos */}
           <div className={styles.planosGrid}>
             
-            {/* Plano Básico */}
             <div className={styles.planoCard}>
               <div className={styles.planoHeader}>
                 <h3>Essencial</h3>
@@ -44,7 +42,6 @@ const Planos = () => {
               </button>
             </div>
 
-            {/* Plano Profissional (Destaque) */}
             <div className={`${styles.planoCard} ${styles.planoDestaque}`}>
               <div className={styles.badgePopular}>Mais Popular</div>
               <div className={styles.planoHeader}>
@@ -71,7 +68,6 @@ const Planos = () => {
               </button>
             </div>
 
-            {/* Plano Enterprise */}
             <div className={styles.planoCard}>
               <div className={styles.planoHeader}>
                 <h3>Enterprise</h3>

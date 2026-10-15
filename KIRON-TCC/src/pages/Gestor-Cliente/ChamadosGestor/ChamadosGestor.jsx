@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModalDetalhesChamado from '../../../components/ModalDetalhesChamado/ModalDetalhesChamado';
-import api from '../../services/api';
+import api from '../../../services/api';
 import styles from './ChamadosGestor.module.css';
 
 const ChamadosGestor = () => {
@@ -14,7 +14,7 @@ const ChamadosGestor = () => {
   const [chamados, setChamados] = useState([]);
   const [carregando, setCarregando] = useState(true);
 
-  // Busca lista real de chamados no banco MySQL via Axios
+
   const carregarChamados = async () => {
     try {
       setCarregando(true);
@@ -72,6 +72,9 @@ const ChamadosGestor = () => {
           </button>
           <button onClick={() => navigate('/cadastroEquipamento')}>
             <i className="fa-solid fa-desktop"></i> Equipamentos
+          </button>
+          <button onClick={() => navigate('/cadastroFuncionario')}>
+            <i className="fa-solid fa-user-plus"></i> Funcionários
           </button>
           <button onClick={() => navigate('/financeiro')}>
             <i className="fa-solid fa-file-invoice-dollar"></i> Financeiro

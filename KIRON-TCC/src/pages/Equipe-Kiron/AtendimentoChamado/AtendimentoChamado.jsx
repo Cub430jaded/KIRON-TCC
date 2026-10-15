@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../services/api';
+import api from '../../../services/api'
 import styles from './AtendimentoChamado.module.css';
 
 const AtendimentoChamado = () => {
@@ -65,7 +65,7 @@ const AtendimentoChamado = () => {
     }
 
     try {
-      await api.put(`/chamados/${id}/status`, {
+      await api.put(`/chamados/${id}/parecer`, {
         status: form.status,
         parecerTecnico: form.parecer
       });

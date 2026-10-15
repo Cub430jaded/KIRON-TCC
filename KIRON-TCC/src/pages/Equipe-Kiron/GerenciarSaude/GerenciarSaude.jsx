@@ -1,32 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../services/api';
+import api from '../../../services/api';
 import styles from './GerenciarSaude.module.css';
 
 const GerenciarSaude = () => {
   const navigate = useNavigate();
 
-  // Estados dos Equipamentos e Filtros
   const [equipamentos, setEquipamentos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [busca, setBusca] = useState('');
   const [filtroSaude, setFiltroSaude] = useState('Todos');
 
-  // Dados do Técnico Logado
   const [tecnico, setTecnico] = useState({
     nome: 'Técnico',
     cargo: 'Suporte Nível 2'
   });
 
   useEffect(() => {
-    // 1. Validação da Sessão
     const estaLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
     if (!estaLogado) {
       navigate('/login');
       return;
     }
 
-    // 2. Carrega dados do Técnico logado
     const dadosUsuario = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
     if (dadosUsuario) {
       setTecnico({
@@ -35,7 +31,6 @@ const GerenciarSaude = () => {
       });
     }
 
-    // 3. Busca lista real de equipamentos cadastrados na API Java / MySQL via Axios
     const carregarEquipamentos = async () => {
       try {
         setCarregando(true);
@@ -57,7 +52,6 @@ const GerenciarSaude = () => {
     navigate('/login');
   };
 
-  // Regra visual de badge de Saúde conforme o status do equipamento
   const getSaudeBadge = (statusSaude) => {
     const st = (statusSaude || 'Crítico').toLowerCase();
     if (st.includes('ótimo') || st.includes('otimo') || st.includes('saudável') || st.includes('saudavel')) {
@@ -69,7 +63,6 @@ const GerenciarSaude = () => {
     return { class: styles.badgeCritico, label: 'Crítico' };
   };
 
-  // Filtragem combinada por busca textual e status de saúde
   const equipamentosFiltrados = equipamentos.filter((eq) => {
     const atendeBusca = 
       (eq.nome || '').toLowerCase().includes(busca.toLowerCase()) ||
@@ -86,14 +79,12 @@ const GerenciarSaude = () => {
     return true;
   });
 
-  // KPIs dinâmicos
   const totalEquipamentos = equipamentos.length;
   const qtdAlertas = equipamentos.filter(e => (e.statusSaude || '').toLowerCase().includes('alerta')).length;
   const qtdCriticos = equipamentos.filter(e => (e.statusSaude || '').toLowerCase().includes('crítico') || (e.statusSaude || '').toLowerCase().includes('critico')).length;
 
   return (
     <div className={styles.pageContainer}>
-      {/* Menu Lateral Staff */}
       <aside className={styles.sidebar}>
         <div className={styles.sidebarBrand}>
           <h2>Kiron<span className={styles.lightText}>TI</span> <span className={styles.badgeStaff}>STAFF</span></h2>
@@ -123,13 +114,11 @@ const GerenciarSaude = () => {
         </div>
       </aside>
 
-      {/* Conteúdo Principal */}
       <main className={styles.mainContent}>
         <header className={styles.topHeader}>
           <h1>Monitoramento e Saúde dos Equipamentos</h1>
         </header>
 
-        {/* KPIs de Saúde do Parque */}
         <section className={styles.kpiGrid}>
           <div className={styles.kpiCard}>
             <div className={styles.kpiIconTotal}><i className="fa-solid fa-desktop"></i></div>
@@ -154,7 +143,6 @@ const GerenciarSaude = () => {
           </div>
         </section>
 
-        {/* Área de Filtros e Busca */}
         <section className={styles.listSection}>
           <div className={styles.filterBar}>
             <div className={styles.searchBox}>
@@ -195,7 +183,6 @@ const GerenciarSaude = () => {
             </div>
           </div>
 
-          {/* Tabela de Dispositivos */}
           <div className={styles.tableWrapper}>
             <table className={styles.customTable}>
               <thead>

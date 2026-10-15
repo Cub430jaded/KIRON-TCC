@@ -1,4 +1,3 @@
-/* Estrutura Geral da Página */
 .pageWrapper {
   display: flex;
   flex-direction: column;
@@ -16,7 +15,6 @@
   padding: 30px 20px;
 }
 
-/* O Cartão Central */
 .card {
   background: #ffffff;
   padding: 30px 35px;
@@ -55,7 +53,6 @@
   line-height: 1.4;
 }
 
-/* Formulário */
 .form-grid {
   display: flex;
   flex-direction: column;
@@ -92,7 +89,6 @@
   box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
 }
 
-/* Botões de Ação */
 .actions {
   display: flex;
   flex-direction: column;
@@ -134,7 +130,6 @@
   color: #333;
 }
 
-/* Links Adicionais no Rodapé do Card */
 .footerLinks {
   margin-top: 20px;
   font-size: 0.9rem;
@@ -154,7 +149,6 @@
   text-decoration: underline;
 }
 
-/* Rodapé Geral da Página */
 .footer {
   text-align: center;
   padding: 20px;

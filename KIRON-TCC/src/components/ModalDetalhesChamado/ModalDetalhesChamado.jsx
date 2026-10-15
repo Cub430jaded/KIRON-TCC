@@ -15,7 +15,8 @@ const ModalDetalhesChamado = ({ isOpen, onClose, chamado }) => {
           </button>
         </div>
         <div className={styles.modalBody}>
-          <p><strong>Equipamento:</strong> {chamado.equipamento}</p>
+          {/* Correção aplicada na linha abaixo */}
+          <p><strong>Equipamento:</strong> {chamado.equipamento?.nome || 'Não informado'}</p>
           <p><strong>Prioridade:</strong> {chamado.prioridade}</p>
           <p><strong>Status:</strong> {chamado.status}</p>
           <div className={styles.descBox}>

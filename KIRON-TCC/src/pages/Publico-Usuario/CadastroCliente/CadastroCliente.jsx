@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../services/api';
+import api from '../../../services/api';
 import styles from './CadastroCliente.module.css';
 
 const CadastroCliente = () => {
@@ -17,7 +17,6 @@ const CadastroCliente = () => {
   const [erroNome, setErroNome] = useState('');
   const [erroSenha, setErroSenha] = useState('');
 
-  // Estado para controlar a visibilidade da senha em ambos os campos
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   const aplicarMascaraCnpj = (valor) => {
@@ -81,26 +80,24 @@ const CadastroCliente = () => {
       telefone: telefone,
       cnpj: cnpj,
       empresa: razaoSocial.trim() || 'Sua Empresa S.A.',
-      cargo: 'Responsável Técnico / Operações',
-      perfil: 'CLIENTE'
+      cargo: 'Gestor Principal / Responsável',
+      perfil: 'GESTOR'
     };
 
     try {
-      // Envia o cadastro do cliente para a API Java / Spring Boot
-      const res = await api.post('/auth/cadastrar', payload);
+      const res = await api.post('/auth/register', payload);
       const usuarioCadastrado = res.data;
 
-      // Salva os dados retornados pela API na sessão local
       localStorage.setItem('kiron_usuario_logado', 'true');
       localStorage.setItem(
         'kiron_usuario_logado_dados',
         JSON.stringify(usuarioCadastrado || payload)
       );
 
-      alert('Cadastro realizado com sucesso no MySQL!');
+      alert('Cadastro de Gestor realizado com sucesso no MySQL!');
 
-      // Redireciona para o Dashboard do Cliente
-      navigate('/HomeCliente');
+
+      navigate('/dashboardGestor');
     } catch (err) {
       console.error('Erro ao cadastrar cliente:', err);
       const msgErro = err.response?.data || 'Erro de conexão com o servidor Java!';
@@ -116,12 +113,11 @@ const CadastroCliente = () => {
             <span className={styles.logoKiron}>Kiron</span>
             <span className={styles.logoTi}>TI</span>
           </div>
-          <h1>Cadastro de Cliente</h1>
+          <h1>Cadastro de Gestor</h1>
           <p className={styles.subtitle}>Preencha os dados da sua empresa para começar</p>
 
           <form className={styles['form-grid']} onSubmit={handleCadastrar}>
             
-            {/* Campo Nome */}
             <div className={styles.inputGroup}>
               <label className={styles['label-input']} htmlFor="nome">Nome do Responsável:</label>
               <div className={styles.inputWrapper}>
@@ -145,7 +141,6 @@ const CadastroCliente = () => {
               </div>
             </div>
 
-            {/* Razão Social */}
             <div className={styles.inputGroup}>
               <label className={styles['label-input']} htmlFor="razaoSocial">Razão Social da Empresa:</label>
               <input 
@@ -160,7 +155,6 @@ const CadastroCliente = () => {
               />
             </div>
 
-            {/* Grid CNPJ e Telefone */}
             <div className={styles.rowGrid}>
               <div className={styles.inputGroup}>
                 <label className={styles['label-input']} htmlFor="cnpj">CNPJ:</label>
@@ -190,7 +184,6 @@ const CadastroCliente = () => {
               </div>
             </div>
 
-            {/* E-mail */}
             <div className={styles.inputGroup}>
               <label className={styles['label-input']} htmlFor="email">E-mail Corporativo:</label>
               <input 
@@ -205,11 +198,8 @@ const CadastroCliente = () => {
               />
             </div>
 
-            {/* Senhas com Botão de Olho */}
             <div className={styles.inputGroup}>
               <div className={styles.rowGrid}>
-                
-                {/* Campo Senha */}
                 <div>
                   <label className={styles['label-input']} htmlFor="senha">Senha:</label>
                   <div className={styles.passwordWrapper}>
@@ -229,16 +219,11 @@ const CadastroCliente = () => {
                       onClick={() => setMostrarSenha(!mostrarSenha)}
                       title={mostrarSenha ? "Ocultar senha" : "Ver senha"}
                     >
-                      {mostrarSenha ? (
-                        <i className="fa-solid fa-eye-slash"></i>
-                      ) : (
-                        <i className="fa-solid fa-eye"></i>
-                      )}
+                      <i className={mostrarSenha ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"}></i>
                     </button>
                   </div>
                 </div>
 
-                {/* Campo Confirmar Senha */}
                 <div>
                   <label className={styles['label-input']} htmlFor="confirmar-senha">Confirmar Senha:</label>
                   <div className={styles.passwordWrapper}>
@@ -258,15 +243,10 @@ const CadastroCliente = () => {
                       onClick={() => setMostrarSenha(!mostrarSenha)}
                       title={mostrarSenha ? "Ocultar senha" : "Ver senha"}
                     >
-                      {mostrarSenha ? (
-                        <i className="fa-solid fa-eye-slash"></i>
-                      ) : (
-                        <i className="fa-solid fa-eye"></i>
-                      )}
+                      <i className={mostrarSenha ? "fa-solid fa-eye-slash" : "fa-solid fa-eye"}></i>
                     </button>
                   </div>
                 </div>
-
               </div>
 
               {erroSenha && (

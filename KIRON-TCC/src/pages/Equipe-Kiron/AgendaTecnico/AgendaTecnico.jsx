@@ -6,7 +6,6 @@ const AgendaTecnico = () => {
   const navigate = useNavigate();
   const [dataSelecionada, setDataSelecionada] = useState('Hoje');
 
-  // Mock de visitas presenciais agendadas
   const visitas = [
     { id: 1, hora: '09:00', cliente: 'TechCorp', endereco: 'Av. Alphaville, 1000', tipo: 'Manutenção Preventiva', status: 'Concluído', data: 'Hoje' },
     { id: 2, hora: '14:30', cliente: 'Clínica Sorriso', endereco: 'Rua Rio Branco, 45', tipo: 'Suporte Presencial (Chamado #1047)', status: 'Pendente', data: 'Hoje' },

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModalDetalhesChamado from '../../../components/ModalDetalhesChamado/ModalDetalhesChamado';
-import api from '../../services/api';
+import api from '../../../services/api';
 import styles from './DashboardGestor.module.css';
 
 const DashboardGestor = () => {
@@ -10,7 +10,7 @@ const DashboardGestor = () => {
   const [modalAberto, setModalAberto] = useState(false);
   const [chamadoSelecionado, setChamadoSelecionado] = useState(null);
 
-  // Estados dinâmicos do Dashboard
+
   const [usuarioNome, setUsuarioNome] = useState('Gestor');
   const [kpis, setKpis] = useState({
     chamadosAbertos: 0,
@@ -27,19 +27,22 @@ const DashboardGestor = () => {
       return;
     }
 
-    // Lê os dados do gestor logado
+
     const dadosSalvos = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
     if (dadosSalvos && dadosSalvos.nome) {
       setUsuarioNome(dadosSalvos.nome);
     }
 
-    // Carrega estatísticas reais de Chamados e Equipamentos via Axios
+
     const carregarDadosDashboard = async () => {
       try {
         setCarregando(true);
+        const dadosSalvos = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+        const idDono = dadosSalvos.id;
+
         const [resChamados, resEquipamentos] = await Promise.all([
-          api.get('/chamados'),
-          api.get('/equipamentos')
+          api.get(`/chamados/usuario/${idDono}`),     // <-- Traz chamados só dele
+          api.get(`/equipamentos/usuario/${idDono}`) // <-- Traz equipamentos só dele
         ]);
 
         const listaChamados = resChamados.data;
@@ -94,6 +97,9 @@ const DashboardGestor = () => {
           </button>
           <button onClick={() => navigate('/cadastroEquipamento')}>
             <i className="fa-solid fa-desktop"></i> Equipamentos
+          </button>
+          <button onClick={() => navigate('/cadastroFuncionario')}>
+            <i className="fa-solid fa-user-plus"></i> Funcionários
           </button>
           <button onClick={() => navigate('/financeiro')}>
             <i className="fa-solid fa-file-invoice-dollar"></i> Financeiro

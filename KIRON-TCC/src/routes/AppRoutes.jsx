@@ -28,6 +28,7 @@ import ChamadosGestor from "../pages/Gestor-Cliente/ChamadosGestor/ChamadosGesto
 import CadastroEquipamento from "../pages/Gestor-Cliente/CadastroEquipamento/CadastroEquipamento"
 import Financeiro from "../pages/Gestor-Cliente/Financeiro/Financeiro"
 import Consultoria from "../pages/Gestor-Cliente/Consultoria/Consultoria"
+import CadastroFuncionario from "../pages/Gestor-Cliente/CadastroFuncionario/CadastroFuncionario"
 
 // Importações das páginas do Equipe-Kiron
 import FilaTecnico from "../pages/Equipe-Kiron/FilaTecnico/FilaTecnico"
@@ -65,11 +66,12 @@ const AppRoutes = () => {
                 <Route path="/cadastroEquipamento" element={<CadastroEquipamento />} />
                 <Route path="/financeiro" element={<Financeiro />} />
                 <Route path="/consultoria" element={<Consultoria />} />
+                <Route path="/cadastroFuncionario" element={<CadastroFuncionario />} />
 
                 {/* Rotas da Equipe-Kiron */}
                 <Route path="/filaTecnico" element={<FilaTecnico />} /> 
                 <Route path="/agendaTecnico" element={<AgendaTecnico />} />
-                <Route path="/atendimentoChamado" element={<AtendimentoChamado />} />
+                <Route path="/atendimentoChamado/:id" element={<AtendimentoChamado />} /> {/* <-- ADICIONE O /:id AQUI */}
                 <Route path="/gerenciarSaude" element={<GerenciarSaude />} />
             </Routes>
         </HashRouter>

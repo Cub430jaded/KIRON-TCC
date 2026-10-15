@@ -54,7 +54,6 @@
   color: #6b7280;
 }
 
-/* Corpo do texto legal */
 .contentBody {
   display: flex;
   flex-direction: column;
@@ -88,7 +87,6 @@
   margin-bottom: 6px;
 }
 
-/* Bloco de Contato Inferior */
 .contactSupport {
   margin-top: 40px;
   background-color: #f8fafc;
@@ -122,11 +120,11 @@
   transform: translateY(-1px);
 }
 
-/* Responsividade para telas menores */
 @media (max-width: 768px) {
   .termsContainer {
     padding: 30px 20px;
   }
+
   .headerTitleArea h1 {
     font-size: 1.8rem;
   }

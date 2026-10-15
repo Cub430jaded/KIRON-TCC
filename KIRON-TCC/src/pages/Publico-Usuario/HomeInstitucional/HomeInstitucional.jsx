@@ -32,9 +32,9 @@ const HomeInstitucional = () => {
     const usuarioLogado = localStorage.getItem('kiron_usuario_logado') === 'true';
 
     if (usuarioLogado) {
-      navigate('/planos'); // Se já estiver logado, vai direto para os Planos
+      navigate('/planos');
     } else {
-      navigate('/cadastro'); // Se não estiver logado, vai para o Cadastro
+      navigate('/cadastro');
     }
   };
 
@@ -51,7 +51,6 @@ const HomeInstitucional = () => {
               <i className="fa-solid fa-chevron-left"></i>
             </button>
 
-            {/* VIEWPORT: Esta div corta as imagens extras */}
             <div className={styles.carouselViewport}>
               <div 
                 className={styles.carouselTrack}

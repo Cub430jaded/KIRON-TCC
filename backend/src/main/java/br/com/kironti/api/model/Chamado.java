@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table (name= "tb_chamado")
+@Table(name = "tb_chamado")
 public class Chamado {
 
     @Id
@@ -18,13 +18,13 @@ public class Chamado {
     private String descricao;
 
     @Column(nullable = false, length = 50)
-    private String categoria; // Hardware, Software, Rede, Impressora
+    private String categoria;
 
     @Column(nullable = false, length = 20)
-    private String prioridade; // Baixa, Média, Alta
+    private String prioridade;
 
     @Column(nullable = false, length = 20)
-    private String status; // Aberto, Em Andamento, Concluído
+    private String status;
 
     @Column(name = "parecer_tecnico", columnDefinition = "TEXT")
     private String parecerTecnico;
@@ -32,25 +32,32 @@ public class Chamado {
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
 
-    // Relacionamento: Vários chamados podem pertencer a um mesmo Equipamento
+    @Column(name = "tecnico_id")
+    private Long tecnicoId;
+
+    @Column(name = "usuario_id")
+    private Long usuarioId;
+
     @ManyToOne
     @JoinColumn(name = "equipamento_id", nullable = false)
     private Equipamento equipamento;
 
-    public Chamado(){
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", insertable = false, updatable = false)
+    private Usuario usuario;
+
+    public Chamado() {
         this.dataCriacao = LocalDateTime.now();
         this.status = "Aberto";
-
     }
-    public Chamado
-            (
-                    String titulo,
-                    String descricao,
-                    String categoria,
-                    String prioridade,
-                    Equipamento equipamento
-            )
-    {
+
+    public Chamado(
+            String titulo,
+            String descricao,
+            String categoria,
+            String prioridade,
+            Equipamento equipamento
+    ) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.categoria = categoria;
@@ -130,5 +137,28 @@ public class Chamado {
 
     public void setEquipamento(Equipamento equipamento) {
         this.equipamento = equipamento;
+    }
+
+    public Long getTecnicoId() {
+        return tecnicoId;
+    }
+
+    public void setTecnicoId(Long tecnicoId) {
+        this.tecnicoId = tecnicoId;
+    }
+
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

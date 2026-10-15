@@ -18,12 +18,13 @@ public class AuthController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // 1. Endpoint de Cadastro (/api/auth/register)
     @PostMapping("/register")
     public ResponseEntity<?> registrar(@RequestBody Usuario usuario) {
+
+        // CORREÇÃO: Agora o sistema bloqueia apenas se o E-MAIL já existir
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Erro: O e-mail informado já está cadastrado no sistema.");
+                    .body("Erro: O E-mail informado já está cadastrado no sistema.");
         }
 
         if (usuario.getPerfil() == null || usuario.getPerfil().trim().isEmpty()) {
@@ -34,13 +35,17 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
     }
 
-    // 2. Endpoint de Login (/api/auth/login)
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credenciais) {
-        String email = credenciais.get("email");
+        String identificacao = credenciais.get("login");
         String senha = credenciais.get("senha");
 
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        if (identificacao == null || senha == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Login e senha são obrigatórios.");
+        }
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmailOrCnpj(identificacao, identificacao);
 
         if (usuarioOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -55,5 +60,35 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(usuario);
+    }
+    @PutMapping("/alterar-senha")
+    public ResponseEntity<?> alterarSenha(@RequestBody Map<String, String> dados) {
+        String email = dados.get("email");
+        String senhaAtual = dados.get("senhaAtual");
+        String novaSenha = dados.get("novaSenha");
+
+        if (email == null || senhaAtual == null || novaSenha == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("E-mail, senha atual e nova senha são obrigatórios.");
+        }
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Usuário não encontrado.");
+        }
+
+        Usuario usuario = usuarioOpt.get();
+
+        if (!usuario.getSenha().equals(senhaAtual)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("A senha atual informada está incorreta.");
+        }
+
+        usuario.setSenha(novaSenha);
+        usuarioRepository.save(usuario);
+
+        return ResponseEntity.ok("Senha alterada com sucesso!");
     }
 }

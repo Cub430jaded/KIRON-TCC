@@ -6,9 +6,15 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
 
-    List<Chamado> findByEquipamento(Long equipamentoId);
+    List<Chamado> findByEquipamentoId(Long equipamentoId);
 
     List<Chamado> findByStatus(String status);
+
+    List<Chamado> findByUsuarioId(Long usuarioId);
+
+    // Busca chamados de todos os colaboradores do mesmo CNPJ
+    List<Chamado> findByUsuarioIdIn(List<Long> usuarioIds);
 }

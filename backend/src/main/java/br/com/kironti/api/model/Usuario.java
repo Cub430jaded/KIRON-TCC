@@ -29,20 +29,34 @@ public class Usuario {
     private String setor;
 
     @Column(nullable = false, length = 20)
-    private String perfil; // CLIENTE ou GESTOR / TECNICO
+    private String perfil;
+
+    @Column(length = 20)
+    private String cnpj;
+
+    @Column(length = 20)
+    private String telefone;
+
+    @Column(length = 255)
+    private String empresa;
+
+
 
     public Usuario(){}
 
     public Usuario
-    (
-            String nome,
-            String email,
-            String senha,
-            String cpf,
-            String cargo,
-            String setor,
-            String perfil
-    )
+            (
+                    String nome,
+                    String email,
+                    String senha,
+                    String cpf,
+                    String cargo,
+                    String setor,
+                    String perfil,
+                    String cnpj,
+                    String telefone,
+                    String empresa
+            )
     {
         this.nome = nome;
         this.email = email;
@@ -51,6 +65,10 @@ public class Usuario {
         this.cargo = cargo;
         this.setor = setor;
         this.perfil = perfil;
+        this.cnpj = cnpj;
+        this.telefone = telefone;
+        this.empresa = empresa;
+
     }
 
     public Long getId() { return id; }
@@ -77,4 +95,12 @@ public class Usuario {
     public String getPerfil() { return perfil; }
     public void setPerfil(String perfil) { this.perfil = perfil; }
 
+    public String getCnpj() { return cnpj; }
+    public void setCnpj(String cnpj) { this.cnpj = cnpj; }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public String getEmpresa() { return empresa; }
+    public void setEmpresa(String empresa) { this.empresa = empresa; }
 }

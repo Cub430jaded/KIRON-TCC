@@ -27,6 +27,9 @@ public class Equipamento {
     @Column(nullable = false, length = 20)
     private String statusSaude;
 
+    @Column(name = "usuario_id")
+    private Long usuarioId;
+
     // Construtor padrão exigido pelo JPA
     public Equipamento() {
     }
@@ -38,6 +41,7 @@ public class Equipamento {
             String tipo,
             String sistemaOperacional,
             String statusSaude
+
     )
     {
         this.nome = nome;
@@ -86,4 +90,7 @@ public class Equipamento {
     public void setStatusSaude(String statusSaude) {
         this.statusSaude = statusSaude;
     }
+
+    public Long getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(Long usuarioId) { this.usuarioId = usuarioId; }
 }

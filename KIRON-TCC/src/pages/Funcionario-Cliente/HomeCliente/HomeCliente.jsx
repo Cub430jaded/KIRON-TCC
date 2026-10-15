@@ -7,7 +7,7 @@ const HomeCliente = () => {
   const navigate = useNavigate();
 
   const [usuario, setUsuario] = useState({
-    nome: 'Bruno Silva',
+    nome: 'Usuário',
     setor: 'Setor de Gestão e Operações'
   });
 
@@ -29,14 +29,20 @@ const HomeCliente = () => {
     const dadosSalvos = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
     if (dadosSalvos) {
       setUsuario({
-        nome: dadosSalvos.nome || 'Bruno Silva',
+        nome: dadosSalvos.nome || 'Usuário Kiron',
         setor: dadosSalvos.cargo ? `Setor: ${dadosSalvos.cargo}` : 'Setor de TI e Operações'
       });
     }
 
     const carregarDadosDashboard = async () => {
       try {
-        const res = await api.get('/chamados');
+        const dadosUsuario = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+        const usuarioId = dadosUsuario ? dadosUsuario.id : null;
+
+        if (!usuarioId) return;
+
+        // Filtra os chamados no banco de dados pelo ID do usuário
+        const res = await api.get(`/chamados/usuario/${usuarioId}`);
         const listaChamados = res.data;
 
         let qtdAbertos = 0;

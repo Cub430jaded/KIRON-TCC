@@ -19,8 +19,15 @@ const MeusChamados = () => {
 
     const carregarChamados = async () => {
       try {
-        const res = await api.get('/chamados');
-        setListaChamados(res.data);
+        const dadosUsuario = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+        const usuarioId = dadosUsuario ? dadosUsuario.id : null;
+
+        if (usuarioId) {
+          const res = await api.get(`/chamados/usuario/${usuarioId}`);
+          setListaChamados(res.data);
+        } else {
+          setListaChamados([]);
+        }
       } catch (err) {
         console.error('Erro ao conectar com a API de Chamados:', err);
       } finally {

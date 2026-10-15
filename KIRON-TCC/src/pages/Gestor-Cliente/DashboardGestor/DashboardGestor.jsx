@@ -150,6 +150,7 @@ const DashboardGestor = () => {
               <thead>
                 <tr>
                   <th>ID</th>
+                  
                   <th>Equipamento</th>
                   <th>Prioridade</th>
                   <th>Status</th>

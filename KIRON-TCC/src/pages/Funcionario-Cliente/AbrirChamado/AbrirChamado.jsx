@@ -24,8 +24,15 @@ const AbrirChamado = () => {
 
     const buscarEquipamentos = async () => {
       try {
-        const res = await api.get('/equipamentos');
-        setListaEquipamentos(res.data);
+        const dadosUsuario = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+        const usuarioId = dadosUsuario ? dadosUsuario.id : null;
+
+        if (usuarioId) {
+          const res = await api.get(`/equipamentos/usuario/${usuarioId}`);
+          setListaEquipamentos(res.data);
+        } else {
+          setListaEquipamentos([]);
+        }
       } catch (err) {
         console.error('Erro ao buscar equipamentos:', err);
       } finally {
@@ -50,12 +57,16 @@ const AbrirChamado = () => {
       return;
     }
 
+    const dadosUsuario = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
+    const usuarioId = dadosUsuario ? dadosUsuario.id : null;
+
     const payload = {
       titulo: titulo || `${categoria} - ${urgencia}`,
       descricao,
       categoria,
       prioridade: urgencia,
-      equipamentoId: Number(equipamentoId)
+      equipamentoId: Number(equipamentoId),
+      usuarioId: usuarioId ? Number(usuarioId) : null
     };
 
     try {

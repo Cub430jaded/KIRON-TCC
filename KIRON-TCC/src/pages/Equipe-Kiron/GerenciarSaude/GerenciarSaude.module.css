@@ -2,9 +2,10 @@
   display: flex;
   min-height: 100vh;
   background-color: #f1f5f9;
-  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Sidebar */
 .sidebar {
   width: 250px;
   background-color: #111827;
@@ -21,6 +22,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.sidebarBrand h2 {
+  font-size: 1.25rem;
+  margin: 0;
 }
 
 .lightText {
@@ -46,24 +52,28 @@
 }
 
 .avatar {
-  width: 45px;
-  height: 45px;
+  width: 42px;
+  height: 42px;
   background-color: #3b82f6;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  color: white;
 }
 
 .techName {
   font-weight: bold;
   font-size: 0.95rem;
+  margin: 0;
+  color: #f9fafb;
 }
 
 .techRole {
   color: #9ca3af;
   font-size: 0.8rem;
+  margin: 2px 0 0;
 }
 
 .sidebarNav {
@@ -78,13 +88,14 @@
   border: none;
   color: #9ca3af;
   text-align: left;
-  padding: 15px 25px;
-  font-size: 1rem;
+  padding: 12px 20px;
+  font-size: 0.95rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 15px;
-  transition: all 0.3s;
+  gap: 12px;
+  transition: all 0.2s ease;
+  width: 100%;
 }
 
 .sidebarNav button:hover, .activeMenu {
@@ -105,197 +116,391 @@
   color: #ef4444;
   text-align: left;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
+/* Main Area */
 .mainContent {
   flex: 1;
   padding: 30px 40px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 25px;
   overflow-y: auto;
 }
 
 .topHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   background: white;
   padding: 20px 30px;
   border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .topHeader h1 {
   font-size: 1.5rem;
   color: #1f2937;
+  margin: 0;
 }
 
-.clientFilter {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.clientFilter label {
-  font-weight: 600;
-  color: #4b5563;
-  font-size: 0.95rem;
-}
-
-.clientFilter select {
-  padding: 8px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background-color: #f9fafb;
-  outline: none;
-  color: #1f2937;
-}
-
-.clientFilter select:focus {
-  border-color: #3b82f6;
-}
-
-.dashboardGrid {
+/* KPI Cards */
+.kpiGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 20px;
 }
 
-.healthCard {
+.kpiCard {
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border-top: 4px solid transparent;
-  transition: transform 0.2s;
-}
-
-.healthCard:hover {
-  transform: translateY(-3px);
-}
-
-.cardVerde {
-  border-top-color: #10b981;
-}
-
-.cardAmarelo {
-  border-top-color: #f59e0b;
-}
-
-.cardVermelho {
-  border-top-color: #ef4444;
-}
-
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
   padding: 20px;
-  border-bottom: 1px solid #f3f4f6;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.clientName {
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.kpiIconTotal, .kpiIconWarning, .kpiIconDanger {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
 }
 
-.cardHeader h3 {
-  font-size: 1.2rem;
-  color: #111827;
-  margin-top: 4px;
+.kpiIconTotal {
+  background-color: #eff6ff;
+  color: #3b82f6;
 }
 
-.statusIcon {
-  font-size: 1.8rem;
-}
-
-.iconVerde {
-  color: #10b981;
-}
-
-.iconAmarelo {
+.kpiIconWarning {
+  background-color: #fffbeb;
   color: #f59e0b;
 }
 
-.iconVermelho {
+.kpiIconDanger {
+  background-color: #fef2f2;
   color: #ef4444;
 }
 
-.cardBody {
-  padding: 20px;
-  flex: 1;
+.kpiInfo p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.kpiInfo h3 {
+  margin: 4px 0 0;
+  font-size: 1.6rem;
+  color: #111827;
+  font-weight: 700;
+}
+
+/* Section & Filters */
+.listSection {
+  background: white;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
+  gap: 20px;
+}
+
+.filterBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 10px 16px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.searchBox i {
+  color: #94a3b8;
+}
+
+.searchBox input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.filterTabs {
+  display: flex;
   gap: 8px;
-  font-size: 0.95rem;
-  color: #4b5563;
 }
 
-.cardBody p strong {
-  color: #111827;
-}
-
-.alertBox {
-  margin-top: 10px;
-  padding: 12px;
+.tab, .tabActive {
+  padding: 8px 16px;
   border-radius: 6px;
-  background-color: #f9fafb;
-  border-left: 3px solid #d1d5db;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.cardVermelho .alertBox {
-  background-color: #fef2f2;
-  border-left-color: #ef4444;
-  color: #b91c1c;
+.tab:hover {
+  background-color: #f1f5f9;
+  color: #1e293b;
 }
 
-.cardAmarelo .alertBox {
-  background-color: #fffbeb;
-  border-left-color: #f59e0b;
+.tabActive {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+/* Table */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.customTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.customTable th {
+  background-color: #f8fafc;
+  color: #475569;
+  padding: 14px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.customTable td {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.customTable tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Health Badges */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.badgeSaudavel {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.badgeAlerta {
+  background-color: #fef3c7;
   color: #b45309;
 }
 
-.cardFooter {
-  padding: 15px 20px;
-  background-color: #f9fafb;
-  border-top: 1px solid #f3f4f6;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+.badgeCritico {
+  background-color: #fee2e2;
+  color: #b91c1c;
 }
 
+/* Actions */
 .btnAcao {
   background-color: #3b82f6;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 6px;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: background-color 0.2s;
-  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s ease;
 }
 
 .btnAcao:hover {
   background-color: #2563eb;
 }
 
-.okText {
-  color: #10b981;
-  font-weight: 600;
-  font-size: 0.9rem;
+.emptyState {
+  text-align: center;
+  padding: 30px !important;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Modal de Chamado Preventivo */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: white;
+  width: 100%;
+  max-width: 520px;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modalHeader {
+  background-color: #111827;
+  color: white;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalHeader h2 {
+  font-size: 1.1rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #3b82f6;
+}
+
+.closeModalBtn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.closeModalBtn:hover {
+  color: white;
+}
+
+.modalForm {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modalInfoBox {
+  background-color: #f8fafc;
+  border-left: 4px solid #3b82f6;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  color: #334155;
+}
+
+.modalInfoBox p {
+  margin: 2px 0;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.inputGroupModal {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputGroupModal label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.inputGroupModal select, .inputGroupModal textarea {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #475569;
+  outline: none;
+  background-color: #fff;
+  transition: border-color 0.2s;
+}
+
+.inputGroupModal select:focus, .inputGroupModal textarea:focus {
+  border-color: #3b82f6;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btnCancelModal {
+  background: #f1f5f9;
+  color: #475569;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnSubmitModal {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btnSubmitModal:hover {
+  background: #2563eb;
 }

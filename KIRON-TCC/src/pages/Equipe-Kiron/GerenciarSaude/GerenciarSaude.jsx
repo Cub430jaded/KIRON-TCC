@@ -11,6 +11,16 @@ const GerenciarSaude = () => {
   const [busca, setBusca] = useState('');
   const [filtroSaude, setFiltroSaude] = useState('Todos');
 
+  // Estados do Modal de Abrir Chamado Preventivo
+  const [modalAberto, setModalAberto] = useState(false);
+  const [equipamentoSelecionado, setEquipamentoSelecionado] = useState(null);
+  const [formChamado, setFormChamado] = useState({
+    categoria: 'Hardware',
+    prioridade: 'Alta',
+    descricao: ''
+  });
+  const [enviando, setEnviando] = useState(false);
+
   const [tecnico, setTecnico] = useState({
     nome: 'Técnico',
     cargo: 'Suporte Nível 2'
@@ -31,20 +41,20 @@ const GerenciarSaude = () => {
       });
     }
 
-    const carregarEquipamentos = async () => {
-      try {
-        setCarregando(true);
-        const res = await api.get('/equipamentos');
-        setEquipamentos(res.data);
-      } catch (err) {
-        console.error('Erro de conexão com a API ao buscar equipamentos:', err);
-      } finally {
-        setCarregando(false);
-      }
-    };
-
     carregarEquipamentos();
   }, [navigate]);
+
+  const carregarEquipamentos = async () => {
+    try {
+      setCarregando(true);
+      const res = await api.get('/equipamentos');
+      setEquipamentos(res.data);
+    } catch (err) {
+      console.error('Erro de conexão com a API ao buscar equipamentos:', err);
+    } finally {
+      setCarregando(false);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('kiron_usuario_logado');
@@ -52,12 +62,13 @@ const GerenciarSaude = () => {
     navigate('/login');
   };
 
+  // Correção da detecção do status "Verde" / Saudável
   const getSaudeBadge = (statusSaude) => {
-    const st = (statusSaude || 'Crítico').toLowerCase();
-    if (st.includes('ótimo') || st.includes('otimo') || st.includes('saudável') || st.includes('saudavel')) {
+    const st = (statusSaude || 'verde').toLowerCase();
+    if (st.includes('ótimo') || st.includes('otimo') || st.includes('saudável') || st.includes('saudavel') || st.includes('verde')) {
       return { class: styles.badgeSaudavel, label: 'Saudável' };
     }
-    if (st.includes('alerta') || st.includes('atenção') || st.includes('atencao')) {
+    if (st.includes('alerta') || st.includes('atenção') || st.includes('atencao') || st.includes('amarelo')) {
       return { class: styles.badgeAlerta, label: 'Em Alerta' };
     }
     return { class: styles.badgeCritico, label: 'Crítico' };
@@ -69,19 +80,60 @@ const GerenciarSaude = () => {
       (eq.tipo || '').toLowerCase().includes(busca.toLowerCase()) ||
       (eq.sistemaOperacional || '').toLowerCase().includes(busca.toLowerCase());
 
-    const statusSaude = (eq.statusSaude || 'Crítico').toLowerCase();
+    const statusSaude = (eq.statusSaude || 'verde').toLowerCase();
 
     if (!atendeBusca) return false;
     if (filtroSaude === 'Todos') return true;
-    if (filtroSaude === 'Saudável') return statusSaude.includes('ótimo') || statusSaude.includes('saudável') || statusSaude.includes('otimo');
-    if (filtroSaude === 'Alerta') return statusSaude.includes('alerta') || statusSaude.includes('atenção');
-    if (filtroSaude === 'Crítico') return statusSaude.includes('crítico') || statusSaude.includes('critico');
+    if (filtroSaude === 'Saudável') return statusSaude.includes('ótimo') || statusSaude.includes('saudável') || statusSaude.includes('otimo') || statusSaude.includes('verde');
+    if (filtroSaude === 'Alerta') return statusSaude.includes('alerta') || statusSaude.includes('atenção') || statusSaude.includes('amarelo');
+    if (filtroSaude === 'Crítico') return statusSaude.includes('crítico') || statusSaude.includes('critico') || statusSaude.includes('vermelho');
     return true;
   });
 
   const totalEquipamentos = equipamentos.length;
-  const qtdAlertas = equipamentos.filter(e => (e.statusSaude || '').toLowerCase().includes('alerta')).length;
-  const qtdCriticos = equipamentos.filter(e => (e.statusSaude || '').toLowerCase().includes('crítico') || (e.statusSaude || '').toLowerCase().includes('critico')).length;
+  const qtdAlertas = equipamentos.filter(e => (e.statusSaude || '').toLowerCase().includes('alerta') || (e.statusSaude || '').toLowerCase().includes('amarelo')).length;
+  const qtdCriticos = equipamentos.filter(e => (e.statusSaude || '').toLowerCase().includes('crítico') || (e.statusSaude || '').toLowerCase().includes('critico') || (e.statusSaude || '').toLowerCase().includes('vermelho')).length;
+
+  // Abertura e envio do Modal Preventivo
+  const handleAbrirModal = (eq) => {
+    setEquipamentoSelecionado(eq);
+    const badge = getSaudeBadge(eq.statusSaude);
+    setFormChamado({
+      categoria: 'Hardware',
+      prioridade: badge.label === 'Crítico' ? 'Alta' : 'Média',
+      descricao: ''
+    });
+    setModalAberto(true);
+  };
+
+  const handleSalvarChamadoPreventivo = async (e) => {
+    e.preventDefault();
+
+    if (!formChamado.descricao.trim()) {
+      alert('Por favor, informe a descrição da manutenção ou problema observado.');
+      return;
+    }
+
+    try {
+      setEnviando(true);
+      const payload = {
+        titulo: `[Preventiva] ${equipamentoSelecionado.nome}`,
+        descricao: formChamado.descricao,
+        categoria: formChamado.categoria,
+        prioridade: formChamado.prioridade,
+        equipamentoId: equipamentoSelecionado.id
+      };
+
+      await api.post('/chamados', payload);
+      alert(`Chamado preventivo registrado com sucesso para o equipamento ${equipamentoSelecionado.nome}!`);
+      setModalAberto(false);
+    } catch (err) {
+      console.error('Erro ao registrar chamado preventivo:', err);
+      alert('Erro ao enviar o chamado para o servidor. Verifique o console.');
+    } finally {
+      setEnviando(false);
+    }
+  };
 
   return (
     <div className={styles.pageContainer}>
@@ -217,7 +269,7 @@ const GerenciarSaude = () => {
                         <td>
                           <button 
                             className={styles.btnAcao}
-                            onClick={() => navigate('/AbrirChamado')}
+                            onClick={() => handleAbrirModal(eq)}
                             title="Abrir chamado preventivo para este PC"
                           >
                             <i className="fa-solid fa-plus"></i> Abrir Chamado
@@ -238,6 +290,74 @@ const GerenciarSaude = () => {
           </div>
         </section>
       </main>
+
+      {/* Modal de Abertura de Chamado Preventivo */}
+      {modalAberto && equipamentoSelecionado && (
+        <div className={styles.modalOverlay} onClick={() => setModalAberto(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2><i className="fa-solid fa-headset"></i> Chamado Preventivo (NOC)</h2>
+              <button className={styles.closeModalBtn} onClick={() => setModalAberto(false)}>
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <form onSubmit={handleSalvarChamadoPreventivo} className={styles.modalForm}>
+              <div className={styles.modalInfoBox}>
+                <p><strong>Máquina Alvo:</strong> #{equipamentoSelecionado.id} - {equipamentoSelecionado.nome}</p>
+                <p><strong>Tipo/SO:</strong> {equipamentoSelecionado.tipo} ({equipamentoSelecionado.sistemaOperacional || 'Windows 11'})</p>
+              </div>
+
+              <div className={styles.formRow}>
+                <div className={styles.inputGroupModal}>
+                  <label>Categoria</label>
+                  <select 
+                    value={formChamado.categoria}
+                    onChange={(e) => setFormChamado({...formChamado, categoria: e.target.value})}
+                  >
+                    <option value="Hardware">Hardware</option>
+                    <option value="Software">Software</option>
+                    <option value="Rede">Rede</option>
+                    <option value="Manutenção">Manutenção Preventiva</option>
+                  </select>
+                </div>
+
+                <div className={styles.inputGroupModal}>
+                  <label>Prioridade</label>
+                  <select 
+                    value={formChamado.prioridade}
+                    onChange={(e) => setFormChamado({...formChamado, prioridade: e.target.value})}
+                  >
+                    <option value="Baixa">Baixa</option>
+                    <option value="Média">Média</option>
+                    <option value="Alta">Alta</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className={styles.inputGroupModal}>
+                <label>Descrição do Problema / Atuação *</label>
+                <textarea 
+                  rows="4"
+                  placeholder="Descreva a anomalia ou ajuste preventivo necessário..."
+                  value={formChamado.descricao}
+                  onChange={(e) => setFormChamado({...formChamado, descricao: e.target.value})}
+                  required
+                ></textarea>
+              </div>
+
+              <div className={styles.modalFooter}>
+                <button type="button" className={styles.btnCancelModal} onClick={() => setModalAberto(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className={styles.btnSubmitModal} disabled={enviando}>
+                  {enviando ? 'Gerando Ticket...' : 'Abrir Chamado no Banco'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -10,11 +10,9 @@ const FilaTecnico = () => {
   const [chamados, setChamados] = useState([]);
   const [carregando, setCarregando] = useState(true);
 
-  // 1. Estado para Modal de VISUALIZAÇÃO (Somente Leitura - Parecer e Detalhes)
   const [modalDetalhesAberto, setModalDetalhesAberto] = useState(false);
   const [chamadoDetalhes, setChamadoDetalhes] = useState(null);
 
-  // 2. Estado para Modal de EDIÇÃO / GERENCIAMENTO (Edição de Parecer, Prioridade e Reabertura)
   const [modalEditarAberto, setModalEditarAberto] = useState(false);
   const [chamadoEdicao, setChamadoEdicao] = useState(null);
   const [salvando, setSalvando] = useState(false);
@@ -68,7 +66,6 @@ const FilaTecnico = () => {
   const dadosUsuarioLogado = JSON.parse(localStorage.getItem('kiron_usuario_logado_dados'));
   const meuId = dadosUsuarioLogado ? dadosUsuarioLogado.id : null;
 
-  // Filtros das Abas
   const chamadosFiltrados = chamados.filter((chamado) => {
     const st = (chamado.status || '').toLowerCase();
     
@@ -309,7 +306,6 @@ const FilaTecnico = () => {
                       </td>
                       <td>
                         <div className={styles.actionButtons}>
-                          {/* 1. ABA FILA GERAL: Olho + Botão Assumir */}
                           {filtro === 'Fila Geral' && (
                             <>
                               <button className={styles.btnIcon} onClick={() => abrirVisualizacao(chamado)} title="Visualizar Detalhes">
@@ -321,7 +317,6 @@ const FilaTecnico = () => {
                             </>
                           )}
 
-                          {/* 2. ABA MEUS ATENDIMENTOS: Olho + Botão Atender */}
                           {filtro === 'Meus Chamados' && (
                             <>
                               <button className={styles.btnIcon} onClick={() => abrirVisualizacao(chamado)} title="Visualizar Detalhes">
@@ -333,7 +328,6 @@ const FilaTecnico = () => {
                             </>
                           )}
 
-                          {/* 3. ABA HISTÓRICO / CONCLUÍDOS: Botão Ver Parecer + Botão Editar (Lápis) */}
                           {filtro === 'Concluídos' && (
                             <>
                               <button 
@@ -366,9 +360,7 @@ const FilaTecnico = () => {
         </section>
       </main>
 
-      {/* ======================================================== */}
-      {/* 1. MODAL DE VISUALIZAÇÃO (SOMENTE LEITURA - VER PARECER) */}
-      {/* ======================================================== */}
+      
       {modalDetalhesAberto && chamadoDetalhes && (
         <div className={styles.modalOverlay} onClick={() => setModalDetalhesAberto(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -436,9 +428,7 @@ const FilaTecnico = () => {
         </div>
       )}
 
-      {/* ======================================================== */}
-      {/* 2. MODAL DE EDIÇÃO / GERENCIAMENTO (LÁPIS)               */}
-      {/* ======================================================== */}
+
       {modalEditarAberto && chamadoEdicao && (
         <div className={styles.modalOverlay} onClick={() => setModalEditarAberto(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>

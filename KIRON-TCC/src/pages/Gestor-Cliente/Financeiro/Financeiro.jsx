@@ -59,7 +59,7 @@ const Financeiro = () => {
               <span className={styles.badgeAtivo}>Ativo</span>
             </div>
             <p>Cobrança mensal fixa para até 15 dispositivos.</p>
-            <h2>R$ 599,00<span className={styles.mesText}>/mês</span></h2>
+            <h2>R$ 919,90<span className={styles.mesText}>/mês</span></h2>
           </div>
         </section>
 

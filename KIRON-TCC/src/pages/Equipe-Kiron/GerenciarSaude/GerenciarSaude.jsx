@@ -7,6 +7,8 @@ const GerenciarSaude = () => {
   const navigate = useNavigate();
 
   const [equipamentos, setEquipamentos] = useState([]);
+  const [empresasEquipamento, setEmpresasEquipamento] = useState({});
+  const [empresasProprietario, setEmpresasProprietario] = useState({});
   const [carregando, setCarregando] = useState(true);
   const [busca, setBusca] = useState('');
   const [filtroSaude, setFiltroSaude] = useState('Todos');
@@ -47,8 +49,30 @@ const GerenciarSaude = () => {
   const carregarEquipamentos = async () => {
     try {
       setCarregando(true);
-      const res = await api.get('/equipamentos');
-      setEquipamentos(res.data);
+      const equipamentosRes = await api.get('/equipamentos');
+      setEquipamentos(equipamentosRes.data);
+
+      try {
+        const chamadosRes = await api.get('/chamados');
+        const empresasDoEquipamento = {};
+        const empresasDoProprietario = {};
+        chamadosRes.data.forEach((chamado) => {
+          const proprietario = chamado.equipamento?.usuario || chamado.usuario;
+          const proprietarioId = proprietario?.id || chamado.equipamento?.usuarioId || chamado.usuarioId;
+          const empresa = proprietario?.empresa || chamado.empresa;
+
+          if (proprietarioId && typeof empresa === 'string' && empresa.trim() !== '') {
+            empresasDoProprietario[proprietarioId] = empresa;
+          }
+          if (chamado.equipamento?.id && typeof empresa === 'string' && empresa.trim() !== '') {
+            empresasDoEquipamento[chamado.equipamento.id] = empresa;
+          }
+        });
+        setEmpresasEquipamento(empresasDoEquipamento);
+        setEmpresasProprietario(empresasDoProprietario);
+      } catch (err) {
+        console.error('Erro ao buscar empresas dos equipamentos:', err);
+      }
     } catch (err) {
       console.error('Erro de conexão com a API ao buscar equipamentos:', err);
     } finally {
@@ -74,11 +98,22 @@ const GerenciarSaude = () => {
     return { class: styles.badgeCritico, label: 'Crítico' };
   };
 
+  const getNomeEmpresa = (equipamento) => {
+    const nomeEmpresa = equipamento.usuario?.empresa ||
+      empresasEquipamento[equipamento.id] ||
+      empresasProprietario[equipamento.usuarioId || equipamento.usuario?.id] ||
+      equipamento.empresa;
+    return typeof nomeEmpresa === 'string' && nomeEmpresa.trim() !== ''
+      ? nomeEmpresa
+      : 'Empresa N/A';
+  };
+
   const equipamentosFiltrados = equipamentos.filter((eq) => {
     const atendeBusca = 
       (eq.nome || '').toLowerCase().includes(busca.toLowerCase()) ||
       (eq.tipo || '').toLowerCase().includes(busca.toLowerCase()) ||
-      (eq.sistemaOperacional || '').toLowerCase().includes(busca.toLowerCase());
+      (eq.sistemaOperacional || '').toLowerCase().includes(busca.toLowerCase()) ||
+      getNomeEmpresa(eq).toLowerCase().includes(busca.toLowerCase());
 
     const statusSaude = (eq.statusSaude || 'verde').toLowerCase();
 
@@ -201,7 +236,7 @@ const GerenciarSaude = () => {
               <i className="fa-solid fa-magnifying-glass"></i>
               <input 
                 type="text" 
-                placeholder="Buscar por equipamento, tipo ou sistema..." 
+                placeholder="Buscar por equipamento, empresa, tipo ou sistema..."
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
               />
@@ -241,6 +276,7 @@ const GerenciarSaude = () => {
                 <tr>
                   <th>ID</th>
                   <th>Nome do Equipamento</th>
+                  <th>Empresa</th>
                   <th>Tipo</th>
                   <th>S.O.</th>
                   <th>Status de Saúde</th>
@@ -250,7 +286,7 @@ const GerenciarSaude = () => {
               <tbody>
                 {carregando ? (
                   <tr>
-                    <td colSpan="6" className={styles.emptyState}>Carregando saúde dos computadores...</td>
+                    <td colSpan="7" className={styles.emptyState}>Carregando saúde dos computadores...</td>
                   </tr>
                 ) : equipamentosFiltrados.length > 0 ? (
                   equipamentosFiltrados.map((eq) => {
@@ -259,6 +295,7 @@ const GerenciarSaude = () => {
                       <tr key={eq.id}>
                         <td><strong>#EQ-{eq.id}</strong></td>
                         <td><strong>{eq.nome}</strong></td>
+                        <td>{getNomeEmpresa(eq)}</td>
                         <td>{eq.tipo}</td>
                         <td>{eq.sistemaOperacional || 'Windows 11'}</td>
                         <td>
@@ -280,7 +317,7 @@ const GerenciarSaude = () => {
                   })
                 ) : (
                   <tr>
-                    <td colSpan="6" className={styles.emptyState}>
+                    <td colSpan="7" className={styles.emptyState}>
                       Nenhum equipamento encontrado com os filtros selecionados.
                     </td>
                   </tr>
@@ -305,6 +342,7 @@ const GerenciarSaude = () => {
             <form onSubmit={handleSalvarChamadoPreventivo} className={styles.modalForm}>
               <div className={styles.modalInfoBox}>
                 <p><strong>Máquina Alvo:</strong> #{equipamentoSelecionado.id} - {equipamentoSelecionado.nome}</p>
+                <p><strong>Empresa:</strong> {getNomeEmpresa(equipamentoSelecionado)}</p>
                 <p><strong>Tipo/SO:</strong> {equipamentoSelecionado.tipo} ({equipamentoSelecionado.sistemaOperacional || 'Windows 11'})</p>
               </div>
 

@@ -24,7 +24,7 @@ const Planos = () => {
                 <p className={styles.planoDesc}>Para pequenas empresas que buscam suporte ágil.</p>
                 <div className={styles.preco}>
                   <span className={styles.moeda}>R$</span>
-                  <span className={styles.valor}>299</span>
+                  <span className={styles.valor}>919,90</span>
                   <span className={styles.periodo}>/mês</span>
                 </div>
               </div>
@@ -49,7 +49,7 @@ const Planos = () => {
                 <p className={styles.planoDesc}>Solução completa para médias empresas.</p>
                 <div className={styles.preco}>
                   <span className={styles.moeda}>R$</span>
-                  <span className={styles.valor}>699</span>
+                  <span className={styles.valor}>2499,90</span>
                   <span className={styles.periodo}>/mês</span>
                 </div>
               </div>

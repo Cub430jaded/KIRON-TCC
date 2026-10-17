@@ -5,9 +5,9 @@ const Financeiro = () => {
   const navigate = useNavigate();
 
   const faturas = [
-    { id: 'FAT-104', mes: 'Outubro 2026', vencimento: '10/10/2026', valor: 'R$ 599,00', status: 'Pendente' },
-    { id: 'FAT-103', mes: 'Setembro 2026', vencimento: '10/09/2026', valor: 'R$ 599,00', status: 'Pago' },
-    { id: 'FAT-102', mes: 'Agosto 2026', vencimento: '10/08/2026', valor: 'R$ 599,00', status: 'Pago' },
+    { id: 'FAT-104', mes: 'Outubro 2026', vencimento: '10/10/2026', valor: 'R$ 919,90', status: 'Pendente' },
+    { id: 'FAT-103', mes: 'Setembro 2026', vencimento: '10/09/2026', valor: 'R$ 919,90', status: 'Pago' },
+    { id: 'FAT-102', mes: 'Agosto 2026', vencimento: '10/08/2026', valor: 'R$ 919,90', status: 'Pago' },
   ];
 
   const handleDownload = (id) => {

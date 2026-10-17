@@ -92,7 +92,7 @@ const HomeInstitucional = () => {
             <button className={styles.ctaButton} onClick={handleComecarAgora}>
               Começar Agora
             </button>
-            <p className={styles.subText}>Planos a partir de R$ 99/mês. Cancele quando quiser.</p>
+            <p className={styles.subText}>Planos a partir de R$ 920/mês. Cancele quando quiser.</p>
           </div>
         </section>
 

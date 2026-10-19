@@ -71,7 +71,7 @@ const AppRoutes = () => {
                 {/* Rotas da Equipe-Kiron */}
                 <Route path="/filaTecnico" element={<FilaTecnico />} /> 
                 <Route path="/agendaTecnico" element={<AgendaTecnico />} />
-                <Route path="/atendimentoChamado/:id" element={<AtendimentoChamado />} /> {/* <-- ADICIONE O /:id AQUI */}
+                <Route path="/atendimentoChamado/:id" element={<AtendimentoChamado />} />
                 <Route path="/gerenciarSaude" element={<GerenciarSaude />} />
             </Routes>
         </HashRouter>
